@@ -1,0 +1,678 @@
+/* ─── Layout ─────────────────────────────────────────── */
+.container { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+
+/* ─── Header ─────────────────────────────────────────── */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0; gap: 12px;
+}
+.headerLeft   { display: flex; align-items: baseline; gap: 8px; }
+.deckName     { font-size: 17px; font-weight: 700; margin: 0; }
+.format       { font-size: 10px; text-transform: uppercase; color: var(--accent); letter-spacing: 0.5px; }
+.formatSelect {
+  font-size: 10px; text-transform: uppercase; color: var(--accent);
+  letter-spacing: 0.5px; background: transparent; border: none;
+  cursor: pointer; padding: 0 2px; outline: none;
+}
+.formatSelect:hover { color: var(--accent-light); }
+.formatSelect option { text-transform: none; letter-spacing: 0; color: var(--text-primary); background: var(--bg-secondary); }
+
+/* ─── Format restriction banner ─── */
+.formatBanner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 12px;
+  background: rgba(var(--accent-rgb, 100,120,200), 0.08);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px; color: var(--text-muted);
+  flex-shrink: 0;
+}
+.formatBanner strong { color: var(--accent-light); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+.formatBannerClear {
+  background: transparent; border: none; color: var(--text-muted);
+  font-size: 11px; cursor: pointer; padding: 0 4px;
+}
+.formatBannerClear:hover { color: var(--text-primary); }
+
+/* ─── Brawl banner ─── */
+.brawlBanner {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  background: rgba(196,160,48,0.08);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px; color: var(--text-muted);
+  flex-shrink: 0;
+}
+.brawlBannerIcon { font-size: 13px; }
+.brawlBanner strong { color: #c4a030; }
+.brawlBannerHint { color: var(--text-muted); opacity: 0.6; font-style: italic; }
+.brawlColors { display: flex; align-items: center; gap: 2px; }
+.brawlColors img { border-radius: 50%; }
+
+.count        { font-size: 12px; color: var(--text-muted); }
+.headerActions { display: flex; gap: 6px; }
+.activeBtn    { border-color: var(--accent) !important; color: var(--accent-light) !important; }
+
+/* ─── Stats bar ───────────────────────────────────────── */
+.statsBar {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  max-height: 220px; overflow-y: auto;
+}
+
+/* ─── Body split ──────────────────────────────────────── */
+.body { display: flex; flex: 1; overflow: hidden; }
+
+/* ─── LEFT : browser panel ────────────────────────────── */
+.browserPanel {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* ─── CENTER : fiche détail (3e colonne optionnelle) ──────── */
+.detailPanel {
+  width: 290px; flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+/* Search + zoom row */
+.searchRow {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px 6px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.searchInput { flex: 1; font-size: 13px; padding: 7px 10px; }
+.zoomWrap    { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.zoomIcon    { font-size: 14px; color: var(--text-muted); }
+/* Rail visible : largeur fixe, le curseur de l'input le déborde pour atteindre les bords */
+.zoomTrack {
+  position: relative;
+  display: inline-block;
+  width: 100px; height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+}
+/* input natif rendu transparent : il ne sert qu'à capter le drag/clavier.
+   Le point visible est .zoomThumb, positionné en % → atteint vraiment les deux bords. */
+.zoomSlider  {
+  -webkit-appearance: none; appearance: none;
+  position: absolute;
+  top: 50%; left: 0;
+  width: 100%; height: 14px;
+  transform: translateY(-50%);
+  margin: 0; opacity: 0; cursor: pointer; outline: none;
+}
+.zoomThumb {
+  position: absolute;
+  top: 50%;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* ─── Icon filter bar ─────────────────────────────────── */
+.filterBar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.filterGroup { display: flex; align-items: center; gap: 3px; }
+
+/* Separator between groups */
+.filterGroup + .filterGroup::before {
+  content: ""; display: block;
+  width: 1px; height: 20px;
+  background: var(--border);
+  margin-right: 3px;
+}
+
+/* Color SVG circle buttons */
+.colorBtn {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid transparent; background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 2px;
+  transition: transform 0.1s, border-color 0.1s;
+}
+.colorBtn:hover   { transform: scale(1.15); border-color: rgba(255,255,255,0.4); }
+.colorBtn.filterActive {
+  border-color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 0 6px rgba(255,255,255,0.5);
+}
+
+/* Multicolor button — gold coin MTGA style
+   Outer button = 28×28 hit area (same as colorBtn)
+   Inner ::before circle = 20×20 to match SVG icon visual size */
+.multicolorBtn {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: transparent;
+  border: 2px solid transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: transform 0.1s, border-color 0.1s;
+}
+.multicolorBtn::before {
+  content: '';
+  width: 20px; height: 20px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f9df6e, #c9961a 60%, #7a5200);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.35);
+  pointer-events: none;
+}
+.multicolorBtn:hover { transform: scale(1.15); border-color: rgba(255,255,255,0.4); }
+.multicolorBtn.filterActive {
+  border-color: #fff; transform: scale(1.1);
+}
+.multicolorBtn.filterActive::before {
+  box-shadow: 0 0 8px rgba(220,175,60,0.7), inset 0 1px 2px rgba(255,255,255,0.35);
+}
+
+/* Type icon buttons */
+.typeBtn {
+  width: 28px; height: 28px; border-radius: 6px;
+  font-size: 13px; padding: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+}
+.typeBtn:hover        { background: var(--bg-hover); border-color: var(--accent); color: var(--text-primary); }
+.typeBtn.filterActive { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* Land button — visually séparé des types par un micro-gap */
+.landBtn { margin-left: 4px; }
+
+/* CMC number buttons */
+.cmcBtn {
+  width: 22px; height: 22px; border-radius: 50%;
+  font-size: 10px; font-weight: 700; font-family: monospace;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 0.1s, color 0.1s;
+}
+.cmcBtn:hover       { background: var(--bg-hover); color: var(--text-primary); }
+.cmcBtn.filterActive { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Rarity buttons — lotus icon */
+.rarityBtn {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: transparent; border: 1px solid transparent;
+  opacity: 0.5;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 1px;
+  transition: opacity 0.15s, border-color 0.15s, background 0.15s;
+}
+.rarityBtn:hover       { opacity: 0.85; background: var(--bg-hover); }
+.rarityBtn.filterActive {
+  opacity: 1;
+  border-color: var(--rarity-color, currentColor);
+  background: color-mix(in srgb, var(--rarity-color, currentColor) 12%, transparent);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--rarity-color, currentColor) 50%, transparent);
+}
+
+/* Compact selects (set + sort) */
+.compactSelect { font-size: 11px; padding: 3px 5px; max-width: 90px; }
+
+/* ─── Set picker (custom dropdown) ─────────────────────── */
+.setPicker { position: relative; }
+
+.setPickerBtn {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; padding: 3px 6px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 5px;
+  color: var(--text-primary); cursor: pointer; max-width: 130px;
+  white-space: nowrap; overflow: hidden;
+  transition: border-color 0.1s, background 0.1s;
+}
+.setPickerBtn:hover   { border-color: var(--accent); }
+.setPickerBtn.filterActive { border-color: var(--accent); background: rgba(124,106,247,0.15); }
+
+.setPickerLabel { flex: 1; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.setPickerArrow { font-size: 9px; flex-shrink: 0; color: var(--text-muted); }
+
+.setIcon {
+  width: 14px; height: 14px; flex-shrink: 0;
+  filter: invert(1) brightness(0.8);
+  object-fit: contain;
+}
+
+.setPickerDropdown {
+  position: absolute; top: calc(100% + 3px); left: 0; z-index: 100;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 7px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  max-height: 280px; overflow-y: auto;
+  min-width: 180px;
+}
+
+.setPickerOption {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px; font-size: 11px; cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+.setPickerOption:hover { background: var(--bg-hover); }
+.setPickerOptionActive { color: var(--accent-light); background: rgba(124,106,247,0.1); }
+
+.setPickerCheck {
+  font-size: 12px; flex-shrink: 0; width: 14px; text-align: center;
+  color: var(--text-muted);
+}
+.setPickerOptionActive .setPickerCheck {
+  color: var(--accent-light);
+}
+
+.clearBtn {
+  background: #c0392b22; color: #e74c3c;
+  border: 1px solid #c0392b55; border-radius: 5px;
+  font-size: 11px; padding: 2px 7px; cursor: pointer;
+}
+.clearBtn:hover { background: #c0392b44; }
+
+/* ─── Card grid (virtualized rows) ─────────────────────── */
+.grid {
+  flex: 1; overflow-y: auto;
+  padding: 10px;
+  /* Column layout is handled per virtual row via inline style */
+}
+
+.status {
+  color: var(--text-muted); text-align: center;
+  padding: 24px; font-size: 13px;
+}
+
+.resultCount {
+  text-align: right; font-size: 10px;
+  color: var(--text-muted); padding: 2px 0;
+}
+
+/* ─── Card tile ───────────────────────────────────────── */
+.tile {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 7px; overflow: visible; position: relative;
+  transition: border-color 0.12s, transform 0.08s;
+  user-select: none; cursor: grab;
+}
+.tile:hover { border-color: var(--accent); transform: translateY(-2px); z-index: 1; }
+
+.tileImg {
+  width: 100%; display: block;
+  aspect-ratio: 63/88; object-fit: cover;
+  border-radius: 6px 6px 0 0; pointer-events: none;
+}
+
+.tileNoImg {
+  width: 100%; aspect-ratio: 63/88;
+  background: var(--bg-hover);
+  display: flex; align-items: center; justify-content: center;
+  padding: 6px; font-size: 10px; text-align: center;
+  color: var(--text-muted); border-radius: 6px 6px 0 0;
+}
+
+.tileMeta { padding: 3px 4px 4px; overflow: hidden; }
+
+.tileAdd {
+  position: absolute; top: 4px; right: 4px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 16px; line-height: 1; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.12s; cursor: pointer;
+}
+.tile:hover .tileAdd { opacity: 1; }
+
+/* ─── RIGHT : deck panel ──────────────────────────────── */
+.deckPanel {
+  width: 300px; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Artwork zone dans le header ── */
+.artworkZone {
+  width: 40px; height: 26px; flex-shrink: 0;
+  border: 1px dashed var(--border); border-radius: 4px;
+  position: relative; display: flex; align-items: center; justify-content: center;
+  overflow: hidden; cursor: default;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.artworkZoneDragging {
+  border-color: rgba(124,106,247,0.6);
+  border-width: 2px;
+  background: rgba(124,106,247,0.1);
+  box-shadow: 0 0 0 2px rgba(124,106,247,0.2);
+}
+.artworkZoneOver {
+  border-color: var(--accent) !important;
+  background: rgba(124,106,247,0.22) !important;
+  box-shadow: 0 0 0 2px var(--accent) !important;
+}
+.artworkZoneThumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+.artworkZoneIcon { font-size: 13px; color: var(--text-muted); pointer-events: none; }
+.artworkZoneLabel {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(124,106,247,0.75); color: #fff;
+  font-size: 11px; font-weight: 700; pointer-events: none;
+}
+.artworkZoneClear {
+  position: absolute; top: -3px; right: -3px; z-index: 1;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #c0392b; border: none; color: #fff;
+  font-size: 9px; line-height: 1; cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.1s;
+}
+.artworkZone:hover .artworkZoneClear { opacity: 1; }
+
+/* Tab bar */
+.deckTabBar {
+  display: flex; flex-shrink: 0;
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--border);
+}
+
+.deckTab {
+  flex: 1; padding: 9px 6px;
+  background: transparent; border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted); font-size: 12px; font-weight: 600;
+  cursor: pointer; margin-bottom: -2px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  transition: color 0.15s;
+}
+.deckTab:hover { color: var(--text-primary); }
+.deckTabActive { color: var(--accent-light) !important; border-bottom-color: var(--accent) !important; }
+
+.deckTabCount {
+  background: var(--bg-hover); border-radius: 8px;
+  padding: 1px 6px; font-size: 10px; color: var(--text-muted);
+}
+.deckTabActive .deckTabCount { color: var(--accent-light); }
+
+.groupModeBtn {
+  flex: 0 0 auto; padding: 9px 8px;
+  background: transparent; border: none; border-bottom: 2px solid transparent;
+  color: var(--text-muted); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.3px; cursor: pointer;
+  transition: color 0.15s;
+}
+.groupModeBtn:hover { color: var(--text-primary); }
+.groupModeBtnActive { color: var(--accent-light) !important; border-bottom-color: var(--accent) !important; }
+
+.deckList {
+  flex: 1; overflow-y: auto;
+  padding: 8px 12px;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: outline 0.1s, background 0.1s;
+}
+/* Hint visuel pendant un drag */
+.deckListDragging {
+  outline: 2px dashed rgba(124,106,247,0.3);
+  outline-offset: -4px;
+}
+/* Survol actif pendant le drag */
+.deckListOver {
+  outline: 2px dashed var(--accent) !important;
+  outline-offset: -4px;
+  background: rgba(124,106,247,0.04);
+}
+
+.deckEmpty {
+  color: var(--text-muted); text-align: center;
+  padding: 40px 20px; font-size: 13px; line-height: 1.8;
+}
+
+/* ─── Section ─────────────────────────────────────────── */
+.section { display: flex; flex-direction: column; gap: 2px; }
+
+.commanderSep {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 6px 4px;
+  opacity: 0.6;
+}
+
+.sectionHeader {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5px 6px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border); margin-bottom: 3px;
+}
+
+.sectionCount {
+  background: var(--bg-hover); border-radius: 10px;
+  padding: 1px 7px; font-size: 10px; font-weight: 600;
+}
+
+.dropHint {
+  color: var(--text-muted); font-size: 11px;
+  text-align: center; padding: 8px; font-style: italic;
+}
+
+/* ─── Type group ──────────────────────────────────────── */
+.typeGroup { margin-bottom: 5px; }
+
+.typeGroupLabel {
+  font-size: 10px; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.3px;
+  padding: 2px 6px; margin-bottom: 1px;
+}
+
+/* ─── Card row ────────────────────────────────────────── */
+.cardRow {
+  display: flex; align-items: center; gap: 5px;
+  padding: 3px 4px; border-radius: 4px;
+  font-size: 12px;
+}
+
+.qty {
+  min-width: 18px; text-align: center;
+  font-weight: 700; color: var(--accent-light); font-size: 12px;
+  flex-shrink: 0;
+}
+
+.qtyControls {
+  display: flex; align-items: center; gap: 2px;
+  opacity: 0; transition: opacity 0.1s; flex-shrink: 0;
+}
+.cardRow:hover .qtyControls { opacity: 1; }
+
+.qtyBtn {
+  background: var(--bg-secondary); color: var(--text-primary);
+  border: 1px solid var(--border); border-radius: 3px;
+  width: 16px; height: 16px; padding: 0; font-size: 12px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── Card frame (full border, triggers hover preview) ── */
+.cardFrame {
+  flex: 1; display: flex; align-items: center; gap: 4px;
+  border: 1px solid; border-radius: 4px;
+  padding: 2px 5px; overflow: hidden; min-width: 0;
+  cursor: pointer; transition: border-color 0.1s, background 0.1s;
+}
+.cardFrame:hover { background: rgba(255,255,255,0.05); }
+
+.cardName { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.altName  { color: var(--text-muted); font-size: 10px; font-style: italic; }
+
+/* ─── Mana cost icons (deck column) ──────────────────── */
+.manaCostRow {
+  display: inline-flex; align-items: center; gap: 1px;
+  flex-shrink: 0;
+}
+.manaIcon {
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 50%;
+}
+
+.removeBtn {
+  background: transparent; color: var(--text-muted);
+  font-size: 13px; padding: 0 2px; flex-shrink: 0;
+  opacity: 0; transition: opacity 0.1s;
+}
+.cardRow:hover .removeBtn  { opacity: 1; }
+.removeBtn:hover { color: #e74c3c !important; opacity: 1 !important; }
+
+/* ─── Combo panel ─────────────────────────────────────── */
+.comboPanel {
+  padding: 8px 8px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.comboInit, .comboError {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; padding: 16px 8px; text-align: center;
+}
+
+.comboHint {
+  font-size: 12px; color: var(--text-muted); line-height: 1.5; margin: 0;
+}
+
+.comboWarn {
+  font-size: 11px; color: #e74c3c; margin: 0;
+}
+
+.comboLoading {
+  color: var(--text-muted); font-size: 12px; text-align: center; padding: 20px;
+}
+
+/* ── Filter bar ── */
+.comboFilterBar {
+  display: flex; gap: 4px; align-items: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.comboFilterBtn {
+  flex: 1; padding: 4px 6px;
+  background: transparent; border: 1px solid transparent;
+  border-radius: 5px; font-size: 11px; font-weight: 600;
+  color: var(--text-muted); cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+}
+.comboFilterBtn:hover { color: var(--text-primary); }
+.comboFilterActive {
+  color: var(--accent-light) !important;
+  border-color: var(--accent) !important;
+  background: rgba(var(--accent-rgb, 100,100,255), 0.08);
+}
+
+.comboRefreshBtn {
+  background: transparent; color: var(--text-muted);
+  border: none; font-size: 15px; cursor: pointer; padding: 2px 4px;
+  flex-shrink: 0;
+}
+.comboRefreshBtn:hover { color: var(--accent-light); }
+
+.comboEmpty {
+  font-size: 12px; color: var(--text-muted); text-align: center; padding: 16px 0;
+}
+
+/* ── Combo entry card ── */
+.comboEntry {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-left: 3px solid rgba(58, 184, 124, 0.5);
+  border-radius: 6px;
+  padding: 7px 8px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+
+.comboAlmost {
+  border-left-color: rgba(212, 175, 55, 0.6);
+  background: rgba(212, 175, 55, 0.03);
+}
+
+.comboEntryHeader {
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+}
+
+.comboBadge {
+  flex-shrink: 0;
+  background: rgba(212, 175, 55, 0.2);
+  color: #d4af37;
+  border-radius: 4px; padding: 1px 6px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
+}
+
+.comboProduces {
+  font-size: 11px; font-weight: 600;
+  color: var(--accent-light);
+  line-height: 1.3; flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ── Card rows inside a combo ── */
+.comboCardRows {
+  display: flex; flex-direction: column; gap: 1px;
+  border-top: 1px solid var(--border); padding-top: 4px; margin-top: 2px;
+}
+
+.comboCardRow {
+  display: flex; align-items: center; gap: 4px;
+  padding: 2px 4px; border-radius: 3px;
+  border-left: 2px solid transparent;
+  font-size: 11px;
+  transition: background 0.1s;
+}
+.comboCardRow:hover { background: var(--bg-hover); }
+
+.comboCardRowIn {
+  border-left-color: #3ab87c;
+}
+.comboCardRowMissing {
+  border-left-color: #e05a3a;
+}
+
+.comboCardName {
+  flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.comboCardCheck {
+  font-size: 10px; color: #3ab87c; flex-shrink: 0;
+}
+
+.comboAddBtn {
+  width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0;
+  background: rgba(224, 90, 58, 0.18); border: 1px solid rgba(224, 90, 58, 0.4);
+  color: #e05a3a; font-size: 13px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  padding: 0; line-height: 1;
+}
+.comboAddBtn:hover {
+  background: rgba(224, 90, 58, 0.35); border-color: #e05a3a;
+}
+
+/* ── Description toggle ── */
+.comboDescToggle {
+  background: transparent; border: none; cursor: pointer;
+  font-size: 10px; color: var(--text-muted); text-align: left; padding: 0;
+}
+.comboDescToggle:hover { color: var(--text-primary); }
+
+.comboDescText {
+  font-size: 11px; color: var(--text-muted); line-height: 1.45;
+  margin: 2px 0 0; padding: 4px 6px;
+  background: var(--bg-hover); border-radius: 4px;
+}

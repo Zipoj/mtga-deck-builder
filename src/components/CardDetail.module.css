@@ -1,0 +1,150 @@
+.panel {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.nameEn {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.nameFr {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.closeBtn {
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 20px;
+  padding: 0 4px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.closeBtn:hover { color: var(--text-primary); }
+
+.cardImgWrap {
+  position: relative;
+}
+
+.cardImg {
+  width: 100%;
+  border-radius: 10px;
+  display: block;
+}
+
+.flipBtn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+}
+
+.flipBtn:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.label {
+  color: var(--text-muted);
+  min-width: 56px;
+  font-size: 12px;
+}
+
+.manaCost {
+  font-family: monospace;
+  color: var(--accent-light);
+}
+
+.setCode {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.oracleText {
+  background: var(--bg-hover);
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.langNote {
+  display: inline-block; align-self: flex-start;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actions button { flex: 1; min-width: 100px; }
+
+.externalLinks {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.extBtn {
+  flex: 1;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 11px; padding: 5px 8px;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+}
+.extBtn:hover { color: var(--accent-light); border-color: var(--accent); }
+
+.comboCount {
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 2px 0 0;
+}

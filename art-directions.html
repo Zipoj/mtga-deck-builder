@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MTGA Builder — Directions Artistiques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Rajdhani:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mana-font@latest/css/mana.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── PICKER ── */
+.picker {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  display: flex; gap: 4px; padding: 7px 14px;
+  background: #050508; border-bottom: 1px solid #1a1a2a;
+  align-items: center;
+}
+.picker-label { font-size: 10px; color: #44445a; margin-right: 8px; letter-spacing: 1px; font-family: monospace; text-transform: uppercase; }
+.pick-btn {
+  padding: 5px 16px; border-radius: 4px; border: 1px solid #2a2a42;
+  background: transparent; color: #6a6a8a; cursor: pointer; font-size: 12px;
+  font-family: monospace; transition: all 0.15s;
+}
+.pick-btn:hover { background: #1a1a2e; color: #c8c6e0; }
+.pick-btn.active { background: #7c6af7; border-color: #7c6af7; color: #fff; }
+.note { font-size: 10px; color: #44445a; margin-left: auto; font-family: monospace; }
+
+.page { display: none; height: 100vh; padding-top: 38px; }
+.page.show { display: flex; flex-direction: column; }
+
+/* ── SHARED ATOMS ── */
+.shell { display: flex; flex: 1; overflow: hidden; }
+.pip { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; font-size: 8px; font-weight: 800; flex-shrink: 0; }
+.pip-w { background: #f0ecd0; color: #333; }
+.pip-u { background: #1a6bb5; color: #fff; }
+.pip-b { background: #3d1f6b; color: #d0b8ff; }
+.pip-r { background: #c0362a; color: #fff; }
+.pip-g { background: #1a7a4a; color: #fff; }
+.pip-2 { background: #7a7a8c; color: #fff; }
+.mana { display: inline-flex; gap: 2px; }
+.rarity-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.r-c { background: #aaa; }
+.r-u { background: #b0c4de; }
+.r-r { background: #d4af37; box-shadow: 0 0 4px #d4af3760; }
+.r-m { background: #ff6b35; box-shadow: 0 0 4px #ff6b3560; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { border-radius: 3px; }
+
+/* ═══════════════════════════════════════════════════
+   SKIN A — MANUSCRIT ARCANE
+   Parchemin foncé · Or antique · Serif gravé
+═══════════════════════════════════════════════════ */
+#skinA {
+  --bg:     #0e0a06;
+  --bg2:    #1a1208;
+  --bg3:    #221808;
+  --bghov:  #2a2010;
+  --brd:    #5a4020;
+  --brd2:   #c9a45525;
+  --acc:    #c9a455;
+  --acc2:   #e8c878;
+  --acc-bg: #c9a45512;
+  --txt:    #e8dfc0;
+  --muted:  #9a8870;
+  --r:      2px;
+  --fnt-h:  'Cinzel', Georgia, serif;
+  --fnt-b:  'Source Serif 4', Georgia, serif;
+  background: var(--bg); color: var(--txt);
+  font-family: var(--fnt-b); font-size: 13px;
+}
+#skinA ::-webkit-scrollbar-thumb { background: #5a402040; }
+
+#skinA .sidebar {
+  width: 210px; flex-shrink: 0; background: var(--bg2);
+  border-right: 1px solid var(--brd); display: flex; flex-direction: column;
+}
+#skinA .logo {
+  padding: 14px 16px; border-bottom: 1px solid var(--brd); text-align: center;
+}
+#skinA .logo-title { font-family: var(--fnt-h); font-size: 14px; color: var(--acc); letter-spacing: 3px; text-transform: uppercase; }
+#skinA .logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: 3px; }
+#skinA .logo-rule { width: 55%; height: 1px; background: linear-gradient(to right, transparent, var(--acc), transparent); margin: 8px auto 0; }
+
+#skinA .nav { padding: 12px 10px; flex: 1; }
+#skinA .nav-lbl { font-family: var(--fnt-h); font-size: 8px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; padding: 0 6px 8px; }
+#skinA .nv {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 10px; border-left: 2px solid transparent;
+  color: var(--muted); cursor: pointer; margin-bottom: 2px; transition: all 0.12s;
+}
+#skinA .nv:hover { color: var(--txt); background: var(--acc-bg); border-left-color: var(--brd); }
+#skinA .nv.act { color: var(--acc); background: var(--acc-bg); border-left-color: var(--acc); }
+#skinA .nv-icon { font-size: 12px; width: 18px; text-align: center; }
+#skinA .nv-txt { font-family: var(--fnt-h); font-size: 11px; letter-spacing: 0.5px; }
+
+#skinA .sidebar-sep { height: 1px; background: linear-gradient(to right, transparent, var(--brd), transparent); margin: 6px 14px; }
+#skinA .open-lbl { font-family: var(--fnt-h); font-size: 8px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; padding: 8px 16px 4px; }
+#skinA .dk-row {
+  display: flex; align-items: flex-start; gap: 8px; padding: 7px 14px;
+  border-left: 2px solid transparent; cursor: pointer; transition: all 0.12s;
+}
+#skinA .dk-row:hover { background: var(--acc-bg); }
+#skinA .dk-row.act { border-left-color: var(--acc); background: var(--acc-bg); }
+#skinA .dk-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--acc); margin-top: 4px; flex-shrink: 0; }
+#skinA .dk-nm { font-family: var(--fnt-h); font-size: 11px; color: var(--txt); }
+#skinA .dk-meta { font-size: 10px; color: var(--muted); }
+
+#skinA .sidebar-footer { padding: 10px 14px; border-top: 1px solid var(--brd); background: var(--bg); }
+#skinA .ft-stat { display: flex; justify-content: space-between; font-family: var(--fnt-h); font-size: 10px; color: var(--muted); padding: 2px 0; }
+#skinA .ft-stat span:last-child { color: var(--acc); }
+
+#skinA .main { flex: 1; display: flex; overflow: hidden; }
+#skinA .browser { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--brd); }
+#skinA .brow-head { padding: 12px 14px; background: var(--bg2); border-bottom: 1px solid var(--brd); display: flex; flex-direction: column; gap: 8px; }
+#skinA .brow-title { font-family: var(--fnt-h); font-size: 10px; color: var(--acc); letter-spacing: 3px; text-transform: uppercase; }
+#skinA .search-inp {
+  width: 100%; padding: 8px 12px; border-radius: var(--r);
+  background: var(--bg); border: 1px solid var(--brd);
+  color: var(--txt); font-family: var(--fnt-b); font-size: 12px; outline: none;
+}
+#skinA .search-inp::placeholder { color: var(--muted); font-style: italic; }
+#skinA .search-inp:focus { border-color: var(--acc); }
+#skinA .filter-row { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+#skinA .fltr-lbl { font-family: var(--fnt-h); font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+#skinA .clr-btn {
+  width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--brd);
+  background: transparent; cursor: pointer; font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; color: var(--muted); transition: all 0.12s;
+}
+#skinA .clr-btn:hover, #skinA .clr-btn.on { border-color: var(--acc); box-shadow: 0 0 6px var(--acc)30; }
+#skinA .clr-btn.W { color: #f0ecd0; } #skinA .clr-btn.U { color: #5a9ae0; }
+#skinA .clr-btn.B { color: #c060e0; } #skinA .clr-btn.R { color: #e06048; }
+#skinA .clr-btn.G { color: #50b878; }
+#skinA .type-chip {
+  padding: 3px 9px; border-radius: var(--r); border: 1px solid var(--brd);
+  background: transparent; color: var(--muted); font-size: 10px; cursor: pointer;
+  font-family: var(--fnt-h); letter-spacing: 0.5px; transition: all 0.12s;
+}
+#skinA .type-chip:hover, #skinA .type-chip.on { border-color: var(--acc); color: var(--acc); background: var(--acc-bg); }
+
+#skinA .card-grid { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+#skinA .card-tile {
+  width: 110px; aspect-ratio: 63/88; border-radius: var(--r);
+  border: 1px solid var(--brd); background: linear-gradient(135deg, var(--bg3), var(--bg2));
+  cursor: pointer; overflow: hidden; transition: all 0.15s;
+}
+#skinA .card-tile:hover { border-color: var(--acc); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.7), 0 0 10px var(--acc)18; }
+#skinA .card-img { width: 100%; height: 68%; background: linear-gradient(150deg, #2a2010, #1a1408); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+#skinA .card-body { padding: 5px; }
+#skinA .card-name { font-family: var(--fnt-h); font-size: 9px; color: var(--txt); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#skinA .card-type { font-size: 8px; color: var(--muted); font-style: italic; margin-top: 1px; }
+#skinA .card-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
+
+#skinA .deck-panel { width: 286px; flex-shrink: 0; display: flex; flex-direction: column; background: var(--bg2); }
+#skinA .dp-head { padding: 12px 14px; background: var(--bg); border-bottom: 1px solid var(--brd); }
+#skinA .dp-ornament { text-align: center; font-size: 9px; color: var(--acc); opacity: 0.4; letter-spacing: 4px; margin-bottom: 6px; }
+#skinA .dp-title { font-family: var(--fnt-h); font-size: 14px; color: var(--acc); letter-spacing: 1px; }
+#skinA .dp-format { display: inline-block; margin-top: 4px; padding: 2px 8px; border: 1px solid var(--brd); border-radius: var(--r); font-family: var(--fnt-h); font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+#skinA .dp-tabs { display: flex; border-bottom: 1px solid var(--brd); }
+#skinA .dp-tab { flex: 1; text-align: center; padding: 8px 4px; font-family: var(--fnt-h); font-size: 10px; color: var(--muted); cursor: pointer; letter-spacing: 1px; text-transform: uppercase; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.12s; }
+#skinA .dp-tab.act { color: var(--acc); border-bottom-color: var(--acc); }
+#skinA .dp-list { flex: 1; overflow-y: auto; }
+#skinA .dp-section { padding: 7px 14px 3px; font-family: var(--fnt-h); font-size: 9px; color: var(--acc); letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid var(--brd2); }
+#skinA .cr { display: flex; align-items: center; gap: 6px; padding: 5px 14px; border-bottom: 1px solid var(--brd2); cursor: pointer; transition: background 0.1s; }
+#skinA .cr:hover { background: var(--acc-bg); }
+#skinA .cr-q { font-family: var(--fnt-h); font-size: 11px; color: var(--acc); width: 16px; text-align: center; }
+#skinA .cr-n { flex: 1; font-family: var(--fnt-h); font-size: 11px; color: var(--txt); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#skinA .dp-footer { padding: 10px 14px; border-top: 1px solid var(--brd); background: var(--bg); }
+#skinA .mana-curve { display: flex; align-items: flex-end; gap: 4px; height: 46px; margin-bottom: 8px; }
+#skinA .mc-b { flex: 1; background: linear-gradient(to top, var(--acc), var(--acc)30); border-radius: 1px 1px 0 0; min-height: 4px; }
+#skinA .mc-b.hi { background: linear-gradient(to top, var(--acc2), var(--acc)); }
+#skinA .dp-btns { display: flex; gap: 6px; }
+#skinA .dp-btn { flex: 1; padding: 7px; border-radius: var(--r); border: 1px solid var(--brd); background: transparent; color: var(--muted); font-family: var(--fnt-h); font-size: 10px; cursor: pointer; letter-spacing: 0.5px; text-align: center; transition: all 0.12s; }
+#skinA .dp-btn:hover { border-color: var(--acc); color: var(--acc); }
+#skinA .dp-btn.p { border-color: var(--acc); color: var(--acc); background: var(--acc-bg); }
+
+/* ═══════════════════════════════════════════════════
+   SKIN B — MACHINE PHYREXIANE
+   Noir machine · Rouge bile · Acier · Zéro arrondi
+═══════════════════════════════════════════════════ */
+#skinB {
+  --bg:     #060809;
+  --bg2:    #0a0d0a;
+  --bg3:    #0d120d;
+  --bghov:  #131c14;
+  --brd:    #1c2a1c;
+  --brd2:   #1c2a1c80;
+  --acc:    #9b2020;
+  --acc2:   #c04030;
+  --acc-bg: #9b202010;
+  --chrome: #8a9a80;
+  --txt:    #a8b8a0;
+  --muted:  #4a5a48;
+  --r:      0px;
+  --fnt-h:  'Rajdhani', 'Arial Narrow', Arial, sans-serif;
+  --fnt-b:  'Rajdhani', 'Arial Narrow', Arial, sans-serif;
+  background: var(--bg); color: var(--txt);
+  font-family: var(--fnt-b); font-size: 13px;
+}
+#skinB ::-webkit-scrollbar-thumb { background: #1c2a1c; }
+
+#skinB .sidebar {
+  width: 200px; flex-shrink: 0; background: var(--bg2);
+  border-right: 2px solid var(--acc); display: flex; flex-direction: column;
+}
+#skinB .logo {
+  padding: 12px 14px; border-bottom: 2px solid var(--brd);
+  background: linear-gradient(180deg, #0c100c, #070a07);
+  display: flex; align-items: center; gap: 10px;
+}
+#skinB .logo-hex {
+  width: 28px; height: 28px; background: var(--acc); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+#skinB .logo-title { font-family: var(--fnt-h); font-size: 13px; color: var(--chrome); letter-spacing: 3px; text-transform: uppercase; font-weight: 700; }
+#skinB .logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; font-weight: 600; }
+
+#skinB .nav { padding: 8px; flex: 1; }
+#skinB .nav-lbl { font-family: var(--fnt-h); font-size: 9px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; font-weight: 700; padding: 0 6px 6px; border-bottom: 1px solid var(--brd); margin-bottom: 5px; }
+#skinB .nv {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+  color: var(--muted); cursor: pointer; margin-bottom: 1px;
+  border: 1px solid transparent; border-left: 3px solid transparent;
+  font-family: var(--fnt-h); font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  transition: all 0.1s;
+}
+#skinB .nv:hover { color: var(--chrome); border-color: var(--brd); background: var(--bghov); }
+#skinB .nv.act { color: var(--acc2); border-color: var(--acc); border-left-color: var(--acc); background: var(--acc-bg); }
+#skinB .nv-icon { font-size: 13px; width: 18px; text-align: center; }
+
+#skinB .sidebar-sep { height: 2px; background: var(--brd); margin: 6px 0; }
+#skinB .open-lbl { font-family: var(--fnt-h); font-size: 9px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; font-weight: 700; padding: 8px 14px 4px; }
+#skinB .dk-row {
+  display: flex; align-items: flex-start; gap: 8px; padding: 6px 14px;
+  border-left: 3px solid transparent; cursor: pointer; transition: all 0.1s;
+  font-family: var(--fnt-h); font-size: 11px;
+}
+#skinB .dk-row:hover { background: var(--bghov); }
+#skinB .dk-row.act { border-left-color: var(--acc); color: var(--chrome); }
+#skinB .dk-nm { font-weight: 600; color: var(--txt); text-transform: uppercase; letter-spacing: 0.5px; }
+#skinB .dk-meta { font-size: 9px; color: var(--muted); letter-spacing: 1px; }
+
+#skinB .sidebar-footer { padding: 10px 14px; border-top: 2px solid var(--brd); background: var(--bg); }
+#skinB .ft-stat { display: flex; justify-content: space-between; font-family: var(--fnt-h); font-size: 10px; color: var(--muted); padding: 2px 0; font-weight: 600; letter-spacing: 0.5px; }
+#skinB .ft-stat span:last-child { color: var(--chrome); }
+
+#skinB .main { flex: 1; display: flex; overflow: hidden; }
+#skinB .browser { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--brd); }
+#skinB .brow-head { padding: 10px 12px; background: var(--bg2); border-bottom: 2px solid var(--brd); display: flex; flex-direction: column; gap: 7px; }
+#skinB .search-inp {
+  width: 100%; padding: 8px 12px; background: var(--bg);
+  border: 1px solid var(--brd); border-left: 3px solid var(--acc);
+  color: var(--txt); font-family: var(--fnt-b); font-size: 13px; font-weight: 500; letter-spacing: 0.5px; outline: none;
+}
+#skinB .search-inp::placeholder { color: var(--muted); }
+#skinB .search-inp:focus { border-left-color: var(--acc2); }
+#skinB .filter-row { display: flex; gap: 4px; align-items: center; }
+#skinB .clr-btn {
+  width: 28px; height: 22px; border: 1px solid var(--brd); background: var(--bg3);
+  cursor: pointer; font-size: 10px; font-weight: 700; color: var(--muted);
+  display: flex; align-items: center; justify-content: center; transition: all 0.1s;
+  text-transform: uppercase; letter-spacing: 1px; font-family: var(--fnt-h);
+}
+#skinB .clr-btn:hover, #skinB .clr-btn.on { border-color: var(--acc); color: var(--acc2); }
+#skinB .clr-btn.W.on { color: #f0ecd0; border-color: #f0ecd060; }
+#skinB .clr-btn.G.on { color: #50b878; border-color: #50b87860; }
+#skinB .type-chip {
+  padding: 3px 8px; border: 1px solid var(--brd); background: var(--bg);
+  color: var(--muted); font-family: var(--fnt-h); font-size: 10px; cursor: pointer;
+  font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: all 0.1s;
+}
+#skinB .type-chip:hover, #skinB .type-chip.on { border-color: var(--acc); color: var(--acc2); }
+
+#skinB .card-grid { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
+#skinB .card-tile {
+  width: 108px; aspect-ratio: 63/88;
+  border: 1px solid var(--brd); border-left: 2px solid var(--brd);
+  background: linear-gradient(135deg, var(--bg3), var(--bg2));
+  cursor: pointer; overflow: hidden; transition: all 0.1s;
+}
+#skinB .card-tile:hover { border-color: var(--chrome); border-left-color: var(--acc); transform: translateY(-1px); }
+#skinB .card-img { width: 100%; height: 68%; background: linear-gradient(150deg, #0c1010, #080c08); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+#skinB .card-body { padding: 5px; }
+#skinB .card-name { font-family: var(--fnt-h); font-size: 9px; color: var(--txt); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#skinB .card-type { font-family: var(--fnt-h); font-size: 8px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; margin-top: 1px; text-transform: uppercase; }
+#skinB .card-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
+
+#skinB .deck-panel { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; background: var(--bg2); border-left: 1px solid var(--brd); }
+#skinB .dp-head { padding: 10px 14px; background: var(--bg); border-bottom: 2px solid var(--brd); }
+#skinB .dp-system { font-family: var(--fnt-h); font-size: 9px; color: var(--muted); letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
+#skinB .dp-title { font-family: var(--fnt-h); font-size: 15px; color: var(--chrome); letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+#skinB .dp-format { display: inline-block; margin-top: 4px; padding: 2px 8px; border: 1px solid var(--acc); font-family: var(--fnt-h); font-size: 9px; color: var(--acc2); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+#skinB .dp-tabs { display: flex; border-bottom: 2px solid var(--brd); }
+#skinB .dp-tab { flex: 1; text-align: center; padding: 8px 4px; font-family: var(--fnt-h); font-size: 10px; color: var(--muted); cursor: pointer; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.1s; }
+#skinB .dp-tab.act { color: var(--acc2); border-bottom-color: var(--acc); }
+#skinB .dp-list { flex: 1; overflow-y: auto; }
+#skinB .dp-section { padding: 5px 14px; font-family: var(--fnt-h); font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 700; border-left: 3px solid var(--acc); background: var(--acc-bg); margin: 3px 0 1px; }
+#skinB .cr { display: flex; align-items: center; gap: 6px; padding: 5px 14px; border-bottom: 1px solid var(--brd2); cursor: pointer; transition: background 0.1s; }
+#skinB .cr:hover { background: var(--bghov); }
+#skinB .cr-q { font-family: var(--fnt-h); font-size: 12px; color: var(--acc2); width: 16px; text-align: center; font-weight: 700; }
+#skinB .cr-n { flex: 1; font-family: var(--fnt-h); font-size: 11px; color: var(--txt); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#skinB .dp-footer { padding: 10px 14px; border-top: 2px solid var(--brd); background: var(--bg); }
+#skinB .mana-curve { display: flex; align-items: flex-end; gap: 3px; height: 46px; margin-bottom: 8px; }
+#skinB .mc-b { flex: 1; background: linear-gradient(to top, var(--acc), var(--acc)25); min-height: 4px; }
+#skinB .mc-b.hi { background: linear-gradient(to top, var(--acc2), var(--acc)); }
+#skinB .dp-btns { display: flex; gap: 4px; }
+#skinB .dp-btn { flex: 1; padding: 7px; border: 1px solid var(--brd); background: transparent; color: var(--muted); font-family: var(--fnt-h); font-size: 10px; cursor: pointer; letter-spacing: 1px; text-align: center; text-transform: uppercase; font-weight: 700; transition: all 0.1s; }
+#skinB .dp-btn:hover { border-color: var(--chrome); color: var(--chrome); }
+#skinB .dp-btn.p { border-color: var(--acc); color: var(--acc2); background: var(--acc-bg); }
+
+/* ═══════════════════════════════════════════════════
+   SKIN C — NEXUS DE GUILDE
+   Bleu nuit profond · Or guildes · Améthyste · Art Déco
+═══════════════════════════════════════════════════ */
+#skinC {
+  --bg:      #07091a;
+  --bg2:     #0a0e22;
+  --bg3:     #0d122a;
+  --bghov:   #131c38;
+  --brd:     rgba(200, 168, 76, 0.2);
+  --brd2:    rgba(200, 168, 76, 0.1);
+  --acc:     #c8a84c;
+  --acc2:    #e8c868;
+  --acc-bg:  rgba(200, 168, 76, 0.07);
+  --purple:  #7848c0;
+  --purple2: #9a70d8;
+  --txt:     #ddd5f0;
+  --muted:   #7878aa;
+  --r:       4px;
+  --fnt-h:   'Cormorant Garamond', 'Palatino Linotype', Georgia, serif;
+  --fnt-b:   'Cormorant Garamond', 'Palatino Linotype', Georgia, serif;
+  background: var(--bg); color: var(--txt);
+  font-family: var(--fnt-b); font-size: 14px;
+}
+#skinC ::-webkit-scrollbar-thumb { background: rgba(200,168,76,0.15); }
+
+#skinC .sidebar {
+  width: 215px; flex-shrink: 0; background: var(--bg2);
+  border-right: 1px solid var(--acc); display: flex; flex-direction: column;
+}
+#skinC .logo {
+  padding: 13px 16px; border-bottom: 1px solid var(--acc); text-align: center; position: relative;
+}
+#skinC .logo::before { content: '✦'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--acc); font-size: 10px; opacity: 0.5; }
+#skinC .logo::after  { content: '✦'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--acc); font-size: 10px; opacity: 0.5; }
+#skinC .logo-title { font-family: var(--fnt-h); font-size: 16px; color: var(--acc); letter-spacing: 2px; font-style: italic; font-weight: 600; }
+#skinC .logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: 2px; }
+
+#skinC .nav { padding: 10px; flex: 1; }
+#skinC .nav-lbl { font-family: var(--fnt-h); font-size: 9px; color: var(--acc); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; padding: 0 6px 6px; border-bottom: 1px solid var(--brd); margin-bottom: 6px; }
+#skinC .nv {
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--r);
+  color: var(--muted); cursor: pointer; margin-bottom: 1px;
+  border: 1px solid transparent; transition: all 0.15s;
+}
+#skinC .nv:hover { color: var(--txt); background: var(--acc-bg); border-color: var(--brd); }
+#skinC .nv.act { color: var(--acc); background: var(--acc-bg); border-color: var(--acc); }
+#skinC .nv-icon { font-size: 12px; width: 16px; text-align: center; color: var(--acc); opacity: 0.7; }
+#skinC .nv-txt { font-family: var(--fnt-h); font-size: 13px; letter-spacing: 0.5px; font-style: italic; }
+
+#skinC .sidebar-sep { height: 1px; background: linear-gradient(to right, transparent, var(--acc)50, transparent); margin: 6px 12px; }
+#skinC .open-lbl { font-family: var(--fnt-h); font-size: 9px; color: var(--acc); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; padding: 8px 16px 4px; }
+#skinC .dk-row {
+  display: flex; align-items: flex-start; gap: 8px; padding: 7px 14px;
+  border-left: 2px solid transparent; cursor: pointer; transition: all 0.12s;
+}
+#skinC .dk-row:hover { background: var(--acc-bg); }
+#skinC .dk-row.act { border-left-color: var(--acc); background: var(--acc-bg); }
+#skinC .dk-nm { font-family: var(--fnt-h); font-size: 12px; color: var(--txt); font-style: italic; }
+#skinC .dk-meta { font-size: 10px; color: var(--muted); }
+
+#skinC .sidebar-footer { padding: 10px 14px; border-top: 1px solid var(--acc); background: var(--bg); }
+#skinC .ft-stat { display: flex; justify-content: space-between; font-family: var(--fnt-h); font-size: 10px; color: var(--muted); padding: 2px 0; }
+#skinC .ft-stat span:last-child { color: var(--acc); font-style: italic; }
+
+#skinC .main { flex: 1; display: flex; overflow: hidden; }
+#skinC .browser { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--acc); }
+#skinC .brow-head { padding: 12px 16px; background: var(--bg2); border-bottom: 1px solid var(--acc); display: flex; flex-direction: column; gap: 8px; }
+#skinC .deco-line { height: 1px; background: linear-gradient(to right, transparent, var(--acc)35, transparent); }
+#skinC .search-inp {
+  width: 100%; padding: 8px 14px; border-radius: var(--r);
+  background: var(--bg); border: 1px solid var(--brd);
+  color: var(--txt); font-family: var(--fnt-b); font-size: 13px; font-style: italic; outline: none;
+}
+#skinC .search-inp::placeholder { color: var(--muted); }
+#skinC .search-inp:focus { border-color: var(--acc); }
+#skinC .filter-row { display: flex; gap: 5px; align-items: center; }
+#skinC .clr-btn {
+  width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--brd);
+  background: transparent; cursor: pointer; font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; color: var(--muted); transition: all 0.12s;
+}
+#skinC .clr-btn:hover, #skinC .clr-btn.on { border-color: var(--acc); box-shadow: 0 0 8px var(--acc)30; }
+#skinC .clr-btn.W { color: #f0ecd0; } #skinC .clr-btn.U { color: #5a9ae0; }
+#skinC .clr-btn.B { color: #c060e0; } #skinC .clr-btn.R { color: #e06048; }
+#skinC .clr-btn.G { color: #50b878; }
+#skinC .type-chip {
+  padding: 3px 10px; border-radius: var(--r); border: 1px solid var(--brd);
+  background: transparent; color: var(--muted); font-family: var(--fnt-h); font-size: 11px; font-style: italic; cursor: pointer; transition: all 0.12s;
+}
+#skinC .type-chip:hover, #skinC .type-chip.on { border-color: var(--acc); color: var(--acc); background: var(--acc-bg); }
+
+#skinC .card-grid { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+#skinC .card-tile {
+  width: 110px; aspect-ratio: 63/88; border-radius: var(--r);
+  border: 1px solid var(--brd); background: linear-gradient(135deg, var(--bg3), var(--bg2));
+  cursor: pointer; overflow: hidden; transition: all 0.15s;
+}
+#skinC .card-tile:hover { border-color: var(--acc); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.7), 0 0 12px var(--acc)15; }
+#skinC .card-img { width: 100%; height: 68%; background: linear-gradient(150deg, #0d1228, #07091a); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+#skinC .card-body { padding: 5px; }
+#skinC .card-name { font-family: var(--fnt-h); font-size: 9px; color: var(--txt); font-weight: 600; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#skinC .card-type { font-size: 8px; color: var(--muted); margin-top: 1px; }
+#skinC .card-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
+
+#skinC .deck-panel { width: 290px; flex-shrink: 0; display: flex; flex-direction: column; background: var(--bg2); }
+#skinC .dp-head { padding: 12px 16px; background: var(--bg); border-bottom: 1px solid var(--acc); }
+#skinC .dp-ornament { text-align: center; font-size: 10px; color: var(--acc); opacity: 0.4; letter-spacing: 4px; margin-bottom: 6px; }
+#skinC .dp-title { font-family: var(--fnt-h); font-size: 16px; color: var(--acc); letter-spacing: 1px; font-style: italic; font-weight: 600; }
+#skinC .dp-format { display: inline-block; margin-top: 4px; padding: 2px 8px; border: 1px solid var(--brd); border-radius: 2px; font-family: var(--fnt-h); font-size: 9px; color: var(--purple2); letter-spacing: 1px; text-transform: uppercase; }
+#skinC .dp-tabs { display: flex; border-bottom: 1px solid var(--acc); }
+#skinC .dp-tab { flex: 1; text-align: center; padding: 8px 4px; font-family: var(--fnt-h); font-size: 11px; color: var(--muted); cursor: pointer; letter-spacing: 1px; font-style: italic; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.12s; }
+#skinC .dp-tab.act { color: var(--acc); border-bottom-color: var(--acc); }
+#skinC .dp-list { flex: 1; overflow-y: auto; }
+#skinC .dp-section { padding: 7px 16px 3px; font-family: var(--fnt-h); font-size: 10px; color: var(--acc); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; border-bottom: 1px solid var(--brd2); }
+#skinC .cr { display: flex; align-items: center; gap: 6px; padding: 5px 16px; border-bottom: 1px solid var(--brd2); cursor: pointer; transition: background 0.1s; }
+#skinC .cr:hover { background: var(--acc-bg); }
+#skinC .cr-q { font-family: var(--fnt-h); font-size: 12px; color: var(--acc); width: 16px; text-align: center; font-style: italic; }
+#skinC .cr-n { flex: 1; font-family: var(--fnt-h); font-size: 12px; color: var(--txt); font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#skinC .dp-footer { padding: 10px 16px; border-top: 1px solid var(--acc); background: var(--bg); }
+#skinC .mana-curve { display: flex; align-items: flex-end; gap: 4px; height: 46px; margin-bottom: 8px; }
+#skinC .mc-b { flex: 1; background: linear-gradient(to top, var(--acc), var(--acc)25); border-radius: 1px 1px 0 0; min-height: 4px; }
+#skinC .mc-b.hi { background: linear-gradient(to top, var(--acc2), var(--purple)60); }
+#skinC .dp-btns { display: flex; gap: 6px; }
+#skinC .dp-btn { flex: 1; padding: 7px; border-radius: var(--r); border: 1px solid var(--brd); background: transparent; color: var(--muted); font-family: var(--fnt-h); font-size: 11px; cursor: pointer; letter-spacing: 0.5px; text-align: center; font-style: italic; transition: all 0.12s; }
+#skinC .dp-btn:hover { border-color: var(--acc); color: var(--acc); }
+#skinC .dp-btn.p { border-color: var(--acc); color: var(--acc); background: var(--acc-bg); }
+
+/* ═══════════════════════════════════════════════════
+   SKIN D — ARENA PRO
+   MTGA blue · Cyan électrique · Glassmorphism · Glow
+═══════════════════════════════════════════════════ */
+#skinD {
+  --bg:     #09101e;
+  --bg2:    #0c1428;
+  --bg3:    #0f182e;
+  --bghov:  rgba(0, 212, 255, 0.06);
+  --brd:    rgba(0, 212, 255, 0.14);
+  --brd2:   rgba(0, 212, 255, 0.07);
+  --acc:    #00d4ff;
+  --acc2:   #40e8ff;
+  --acc-bg: rgba(0, 212, 255, 0.08);
+  --blue2:  #1a4fff;
+  --txt:    #ddeeff;
+  --muted:  #5878a8;
+  --r:      10px;
+  --fnt-h:  'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  --fnt-b:  system-ui, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--txt);
+  font-family: var(--fnt-b); font-size: 13px;
+}
+#skinD ::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.18); }
+
+/* ═══════════════════════════════════════════════════
+   SKIN E — FORGE ARCANE
+   Layout : topbar deck + browser + panel (comme l'app réelle)
+   Vibe   : textures card frame · or · pierre · symboles officiels
+═══════════════════════════════════════════════════ */
+#skinE {
+  --bg:      #09070c;
+  --bg2:     #0f0d14;
+  --bg3:     #161420;
+  --bghov:   rgba(196,160,40,0.06);
+  --brd-g:   #b89030;   /* or card frame */
+  --brd-d:   #4a3818;   /* or sombre inner */
+  --brd-s:   #2a2218;   /* pierre foncée */
+  --acc:     #c4a030;   /* or chaud */
+  --acc2:    #e8c040;   /* or vif */
+  --acc-bg:  rgba(196,160,48,0.07);
+  --red:     #8a1818;   /* rouge Magic */
+  --blue:    #183880;   /* bleu Magic */
+  --txt:     #ddd0a8;   /* parchemin clair */
+  --muted:   #887060;   /* gris chaud */
+  --fnt-h:   'Cinzel', 'Trajan Pro', Georgia, serif;
+  --fnt-b:   system-ui, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--txt);
+  font-family: var(--fnt-b); font-size: 13px;
+}
+#skinE ::-webkit-scrollbar-thumb { background: rgba(196,160,48,0.2); }
+
+/* ── Sidebar E ── */
+#skinE .e-sidebar {
+  width: 195px; flex-shrink: 0; display: flex; flex-direction: column;
+  background: var(--bg2);
+  border-right: 1px solid var(--brd-d);
+  box-shadow: 1px 0 0 var(--brd-g), 2px 0 0 var(--brd-s);
+}
+#skinE .e-logo {
+  padding: 12px 14px; border-bottom: 1px solid var(--brd-d);
+  background: linear-gradient(180deg, #1a1620, #0f0d14);
+  display: flex; align-items: center; gap: 10px;
+}
+#skinE .e-logo-symbol {
+  font-size: 20px; filter: drop-shadow(0 0 6px #c4a03060);
+  width: 28px; text-align: center; flex-shrink: 0;
+}
+#skinE .e-logo-title {
+  font-family: var(--fnt-h); font-size: 13px; color: var(--acc); letter-spacing: 1px; text-transform: uppercase;
+}
+#skinE .e-logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; }
+
+#skinE .e-nav { padding: 10px 8px; flex: 1; }
+#skinE .e-nav-lbl {
+  font-family: var(--fnt-h); font-size: 8px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase;
+  padding: 0 6px 6px; border-bottom: 1px solid var(--brd-s); margin-bottom: 5px;
+}
+#skinE .e-nv {
+  display: flex; align-items: center; gap: 9px; padding: 8px 10px;
+  color: var(--muted); cursor: pointer; margin-bottom: 1px;
+  border-left: 2px solid transparent; transition: all 0.12s;
+}
+#skinE .e-nv:hover { color: var(--txt); background: var(--bghov); border-left-color: var(--brd-d); }
+#skinE .e-nv.act { color: var(--acc); background: var(--acc-bg); border-left-color: var(--acc); }
+#skinE .e-nv-icon { width: 18px; text-align: center; font-size: 13px; }
+#skinE .e-nv-txt { font-size: 12px; }
+
+#skinE .e-sep { height: 1px; background: linear-gradient(to right, transparent, var(--brd-g)40, transparent); margin: 6px 12px; }
+#skinE .e-open-lbl {
+  font-family: var(--fnt-h); font-size: 8px; color: var(--acc); letter-spacing: 2px; text-transform: uppercase;
+  padding: 8px 14px 4px;
+}
+#skinE .e-dk {
+  display: flex; align-items: center; gap: 7px; padding: 5px 14px;
+  border-left: 2px solid transparent; cursor: pointer; transition: all 0.1s;
+}
+#skinE .e-dk:hover { background: var(--bghov); }
+#skinE .e-dk.act { border-left-color: var(--acc); background: var(--acc-bg); }
+#skinE .e-dk-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--acc); flex-shrink: 0; }
+#skinE .e-dk-nm { font-size: 11px; color: var(--txt); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#skinE .e-dk-meta { font-size: 9px; color: var(--muted); }
+
+#skinE .e-footer {
+  padding: 10px 12px; border-top: 1px solid var(--brd-d);
+  background: linear-gradient(180deg, var(--bg2), var(--bg));
+}
+#skinE .e-ft-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); padding: 2px 0; }
+#skinE .e-ft-row span:last-child { color: var(--acc); }
+
+/* ── Main area E (vertical: topbar + content) ── */
+#skinE .e-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Deck Topbar (comme screen 1) */
+#skinE .e-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, #1a1620 0%, #0f0d14 100%);
+  border-bottom: 1px solid var(--brd-d);
+  box-shadow: 0 1px 0 var(--brd-g)40;
+  flex-shrink: 0;
+}
+#skinE .e-topbar-left { display: flex; align-items: center; gap: 10px; }
+#skinE .e-deck-name { font-family: var(--fnt-h); font-size: 15px; color: var(--acc2); letter-spacing: 1px; }
+#skinE .e-format-badge {
+  padding: 2px 8px; border-radius: 2px;
+  border: 1px solid var(--brd-g); background: var(--acc-bg);
+  font-family: var(--fnt-h); font-size: 9px; color: var(--acc); letter-spacing: 2px; text-transform: uppercase;
+}
+#skinE .e-card-count { font-size: 11px; color: var(--muted); }
+#skinE .e-topbar-right { display: flex; align-items: center; gap: 8px; }
+#skinE .e-tb-btn {
+  padding: 5px 12px; border-radius: 2px; cursor: pointer; font-size: 11px;
+  border: 1px solid var(--brd-d); background: transparent; color: var(--muted); transition: all 0.1s;
+}
+#skinE .e-tb-btn:hover { border-color: var(--brd-g); color: var(--txt); }
+#skinE .e-tb-btn.p {
+  border-color: var(--brd-g); color: var(--acc);
+  background: var(--acc-bg);
+  box-shadow: 0 0 0 1px var(--brd-s), inset 0 1px 0 var(--brd-g)30;
+}
+#skinE .e-artwork-thumb {
+  width: 36px; height: 36px; border-radius: 2px;
+  border: 1px solid var(--brd-g);
+  box-shadow: 0 0 0 1px var(--brd-s);
+  background: linear-gradient(135deg, #2a2010, #1a1408);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  overflow: hidden;
+}
+
+/* Content area (browser + deck panel side by side) */
+#skinE .e-content { flex: 1; display: flex; overflow: hidden; }
+
+/* Browser */
+#skinE .e-browser { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--brd-d); }
+#skinE .e-search-row {
+  padding: 8px 12px; background: var(--bg2); border-bottom: 1px solid var(--brd-s);
+  display: flex; gap: 8px; align-items: center;
+}
+#skinE .e-search {
+  flex: 1; padding: 7px 12px; border-radius: 2px;
+  background: var(--bg); border: 1px solid var(--brd-d);
+  color: var(--txt); font-family: var(--fnt-b); font-size: 12px; outline: none; transition: all 0.12s;
+}
+#skinE .e-search::placeholder { color: var(--muted); }
+#skinE .e-search:focus { border-color: var(--brd-g); box-shadow: inset 0 0 0 1px var(--brd-d); }
+
+#skinE .e-filter-row {
+  padding: 6px 12px; background: var(--bg2); border-bottom: 1px solid var(--brd-s);
+  display: flex; gap: 5px; align-items: center; flex-wrap: wrap;
+}
+/* Mana symbol buttons — le feeling Magic vient surtout d'ici */
+#skinE .e-ms-btn {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 2px solid transparent; background: transparent;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s; opacity: 0.55;
+}
+#skinE .e-ms-btn:hover { opacity: 0.85; transform: scale(1.1); }
+#skinE .e-ms-btn.on {
+  opacity: 1; border-color: var(--brd-g);
+  box-shadow: 0 0 8px var(--acc)40, 0 0 0 1px var(--brd-s);
+  transform: scale(1.05);
+}
+#skinE .e-ms-btn .ms { font-size: 18px !important; }
+#skinE .e-filter-sep { width: 1px; height: 20px; background: var(--brd-d); margin: 0 3px; }
+#skinE .e-type-chip {
+  padding: 3px 9px; border-radius: 2px; cursor: pointer;
+  border: 1px solid var(--brd-s); background: transparent;
+  color: var(--muted); font-size: 10px; transition: all 0.12s;
+}
+#skinE .e-type-chip:hover { border-color: var(--brd-d); color: var(--txt); }
+#skinE .e-type-chip.on { border-color: var(--brd-g); color: var(--acc); background: var(--acc-bg); }
+
+#skinE .e-cmc-row {
+  padding: 4px 12px; background: var(--bg); border-bottom: 1px solid var(--brd-s);
+  display: flex; gap: 3px; align-items: center;
+}
+#skinE .e-cmc-lbl { font-size: 9px; color: var(--muted); margin-right: 4px; font-family: var(--fnt-h); letter-spacing: 1px; }
+#skinE .e-cmc-btn {
+  width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+  border: 1px solid var(--brd-s); background: transparent;
+  color: var(--muted); font-size: 10px; font-weight: 700; transition: all 0.1s;
+  display: flex; align-items: center; justify-content: center;
+}
+#skinE .e-cmc-btn:hover { border-color: var(--brd-d); color: var(--txt); }
+#skinE .e-cmc-btn.on { border-color: var(--brd-g); color: var(--acc); background: var(--acc-bg); }
+
+/* Card grid */
+#skinE .e-card-grid {
+  flex: 1; overflow-y: auto; padding: 12px;
+  display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start;
+}
+#skinE .e-card-tile {
+  width: 108px; aspect-ratio: 63/88;
+  border-radius: 2px; overflow: hidden; cursor: pointer;
+  /* Card frame border : double bord or/pierre */
+  border: 1px solid var(--brd-g);
+  box-shadow: 0 0 0 1px var(--brd-s), 0 4px 12px rgba(0,0,0,0.7);
+  background: linear-gradient(160deg, #1e1a14 0%, #120e0a 100%);
+  transition: all 0.15s; position: relative;
+}
+#skinE .e-card-tile:hover {
+  border-color: var(--acc2);
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 1px var(--brd-d), 0 8px 20px rgba(0,0,0,0.8), 0 0 14px var(--acc)20;
+}
+#skinE .e-card-img {
+  width: 100%; height: 67%;
+  background: linear-gradient(160deg, #2a2418, #181008);
+  display: flex; align-items: center; justify-content: center; font-size: 28px;
+  /* Simule le bord interne d'un cadre de carte */
+  box-shadow: inset 0 -2px 8px rgba(0,0,0,0.6);
+}
+#skinE .e-card-body { padding: 5px 6px; }
+#skinE .e-card-name {
+  font-family: var(--fnt-h); font-size: 8.5px; color: var(--txt); font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0.3px;
+}
+#skinE .e-card-type { font-size: 7.5px; color: var(--muted); margin-top: 1px; font-style: italic; }
+#skinE .e-card-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 3px; }
+/* Mana pips dans les cartes */
+#skinE .e-card-bar .ms { font-size: 11px !important; }
+
+/* Deck panel */
+#skinE .e-deck-panel {
+  width: 280px; flex-shrink: 0; display: flex; flex-direction: column;
+  background: var(--bg2);
+}
+#skinE .e-dp-tabs {
+  display: flex; border-bottom: 1px solid var(--brd-d);
+  background: linear-gradient(180deg, #1a1620, #0f0d14);
+}
+#skinE .e-dp-tab {
+  flex: 1; text-align: center; padding: 9px 4px;
+  font-size: 10px; color: var(--muted); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all 0.12s; white-space: nowrap;
+}
+#skinE .e-dp-tab:hover { color: var(--txt); }
+#skinE .e-dp-tab.act { color: var(--acc); border-bottom-color: var(--acc); }
+#skinE .e-dp-tab span { font-size: 9px; color: var(--muted); margin-left: 3px; }
+#skinE .e-dp-list { flex: 1; overflow-y: auto; }
+#skinE .e-dp-section {
+  padding: 6px 14px 3px;
+  font-family: var(--fnt-h); font-size: 9px; color: var(--acc);
+  letter-spacing: 2px; text-transform: uppercase;
+  border-bottom: 1px solid var(--brd-s);
+  background: linear-gradient(90deg, var(--acc-bg), transparent);
+}
+#skinE .e-cr {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-bottom: 1px solid var(--brd-s);
+  cursor: pointer; transition: background 0.1s;
+}
+#skinE .e-cr:hover { background: var(--bghov); }
+#skinE .e-cr-q { font-size: 11px; color: var(--acc); width: 16px; text-align: center; font-weight: 700; flex-shrink: 0; }
+#skinE .e-cr-n { flex: 1; font-size: 11px; color: var(--txt); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#skinE .e-cr .ms { font-size: 11px !important; }
+#skinE .e-dp-footer { padding: 10px 14px; border-top: 1px solid var(--brd-d); background: var(--bg); }
+#skinE .e-curve { display: flex; align-items: flex-end; gap: 4px; height: 44px; margin-bottom: 8px; }
+#skinE .e-curve-b {
+  flex: 1; min-height: 4px; border-radius: 1px 1px 0 0;
+  background: linear-gradient(to top, var(--acc), var(--acc)20);
+}
+#skinE .e-curve-b.hi { background: linear-gradient(to top, var(--acc2), var(--acc)50); box-shadow: 0 0 6px var(--acc)40; }
+#skinE .e-dp-btns { display: flex; gap: 6px; }
+#skinE .e-dp-btn {
+  flex: 1; padding: 7px; border-radius: 2px; cursor: pointer; font-size: 10px; text-align: center;
+  border: 1px solid var(--brd-d); background: transparent; color: var(--muted); transition: all 0.12s;
+}
+#skinE .e-dp-btn:hover { border-color: var(--brd-g); color: var(--txt); }
+#skinE .e-dp-btn.p {
+  border-color: var(--brd-g); color: var(--acc); background: var(--acc-bg);
+  box-shadow: inset 0 1px 0 var(--brd-g)20;
+}
+
+#skinD .sidebar {
+  width: 210px; flex-shrink: 0;
+  background: rgba(255,255,255,0.025);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid var(--brd); display: flex; flex-direction: column;
+}
+#skinD .logo {
+  padding: 13px 16px; border-bottom: 1px solid var(--brd);
+  display: flex; align-items: center; gap: 10px;
+}
+#skinD .logo-gem {
+  width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--acc), var(--blue2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; box-shadow: 0 0 14px var(--acc)45;
+}
+#skinD .logo-title { font-family: var(--fnt-h); font-size: 16px; color: var(--acc); letter-spacing: 2px; font-weight: 700; text-transform: uppercase; }
+#skinD .logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; }
+
+#skinD .nav { padding: 10px; flex: 1; }
+#skinD .nav-lbl { font-family: var(--fnt-h); font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; padding: 0 8px 6px; }
+#skinD .nv {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--r);
+  color: var(--muted); cursor: pointer; margin-bottom: 2px; transition: all 0.15s;
+}
+#skinD .nv:hover { background: var(--bghov); color: var(--txt); }
+#skinD .nv.act { background: rgba(0,212,255,0.09); color: var(--acc); box-shadow: inset 0 0 0 1px var(--brd); }
+#skinD .nv-icon { font-size: 13px; width: 18px; text-align: center; }
+
+#skinD .sidebar-sep { height: 1px; background: var(--brd); margin: 6px 10px; }
+#skinD .open-lbl { font-family: var(--fnt-h); font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; padding: 8px 16px 4px; }
+#skinD .dk-row {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 8px; margin: 1px 6px;
+  cursor: pointer; transition: all 0.12s;
+}
+#skinD .dk-row:hover { background: var(--bghov); }
+#skinD .dk-row.act { background: var(--acc-bg); box-shadow: 0 0 0 1px var(--brd); }
+#skinD .dk-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--acc); box-shadow: 0 0 8px var(--acc); flex-shrink: 0; }
+#skinD .dk-nm { font-size: 12px; color: var(--txt); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+#skinD .sidebar-footer { padding: 10px 14px; border-top: 1px solid var(--brd); }
+#skinD .ft-stat { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); padding: 2px 0; }
+#skinD .ft-stat span:last-child { color: var(--acc); }
+
+#skinD .main { flex: 1; display: flex; overflow: hidden; }
+#skinD .browser { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--brd); }
+#skinD .brow-head { padding: 12px 16px; background: rgba(255,255,255,0.02); backdrop-filter: blur(8px); border-bottom: 1px solid var(--brd); display: flex; flex-direction: column; gap: 8px; }
+#skinD .search-inp {
+  width: 100%; padding: 9px 14px; border-radius: 8px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--brd);
+  color: var(--txt); font-family: var(--fnt-b); font-size: 13px; outline: none; transition: all 0.15s;
+}
+#skinD .search-inp::placeholder { color: var(--muted); }
+#skinD .search-inp:focus { border-color: var(--acc); box-shadow: 0 0 0 2px var(--acc)18; }
+#skinD .filter-row { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+#skinD .clr-btn {
+  width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--brd2);
+  background: rgba(255,255,255,0.04); cursor: pointer; font-size: 9px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; color: var(--muted); transition: all 0.15s;
+}
+#skinD .clr-btn:hover { border-color: var(--brd); transform: scale(1.1); }
+#skinD .clr-btn.on { border-color: var(--acc); box-shadow: 0 0 10px var(--acc)40; }
+#skinD .clr-btn.W { color: #f0ecd0; } #skinD .clr-btn.U { color: #5a9ae0; }
+#skinD .clr-btn.B { color: #c060e0; } #skinD .clr-btn.R { color: #e06048; }
+#skinD .clr-btn.G { color: #50b878; }
+#skinD .type-chip {
+  padding: 4px 10px; border-radius: 20px; border: 1px solid var(--brd2);
+  background: rgba(255,255,255,0.04); color: var(--muted); font-size: 11px; cursor: pointer; transition: all 0.12s;
+}
+#skinD .type-chip:hover { border-color: var(--brd); color: var(--txt); }
+#skinD .type-chip.on { border-color: var(--acc); color: var(--acc); background: var(--acc-bg); }
+
+#skinD .card-grid { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+#skinD .card-tile {
+  width: 110px; aspect-ratio: 63/88; border-radius: 10px;
+  border: 1px solid var(--brd2); background: rgba(255,255,255,0.03);
+  cursor: pointer; overflow: hidden; transition: all 0.15s; backdrop-filter: blur(4px);
+}
+#skinD .card-tile:hover { border-color: var(--acc); transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.55), 0 0 16px var(--acc)20; }
+#skinD .card-img { width: 100%; height: 68%; background: linear-gradient(150deg, rgba(0,212,255,0.04), rgba(26,79,255,0.07)); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+#skinD .card-body { padding: 5px; }
+#skinD .card-name { font-size: 10px; color: var(--txt); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#skinD .card-type { font-size: 8px; color: var(--muted); margin-top: 1px; }
+#skinD .card-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
+
+#skinD .deck-panel { width: 290px; flex-shrink: 0; display: flex; flex-direction: column; background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); border-left: 1px solid var(--brd); }
+#skinD .dp-head { padding: 12px 16px; border-bottom: 1px solid var(--brd); }
+#skinD .dp-title { font-family: var(--fnt-h); font-size: 18px; color: var(--acc); letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+#skinD .dp-format { display: inline-block; margin-top: 4px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--brd); font-size: 10px; color: var(--muted); }
+#skinD .dp-tabs { display: flex; border-bottom: 1px solid var(--brd); gap: 2px; padding: 0 8px; }
+#skinD .dp-tab { flex: 1; text-align: center; padding: 9px 4px; font-family: var(--fnt-h); font-size: 11px; color: var(--muted); cursor: pointer; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -1px; border-radius: 6px 6px 0 0; transition: all 0.12s; }
+#skinD .dp-tab:hover { color: var(--txt); background: var(--bghov); }
+#skinD .dp-tab.act { color: var(--acc); border-bottom-color: var(--acc); }
+#skinD .dp-list { flex: 1; overflow-y: auto; }
+#skinD .dp-section { padding: 8px 16px 4px; font-family: var(--fnt-h); font-size: 10px; color: var(--acc); letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+#skinD .cr { display: flex; align-items: center; gap: 6px; padding: 5px 16px; border-bottom: 1px solid var(--brd2); cursor: pointer; transition: background 0.1s; }
+#skinD .cr:hover { background: var(--bghov); }
+#skinD .cr-q { font-family: var(--fnt-h); font-size: 12px; color: var(--acc); width: 16px; text-align: center; font-weight: 700; }
+#skinD .cr-n { flex: 1; font-size: 12px; color: var(--txt); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#skinD .dp-footer { padding: 12px 16px; border-top: 1px solid var(--brd); }
+#skinD .mana-curve { display: flex; align-items: flex-end; gap: 4px; height: 46px; margin-bottom: 10px; }
+#skinD .mc-b { flex: 1; background: linear-gradient(to top, var(--acc), var(--acc)18); border-radius: 4px 4px 0 0; min-height: 4px; }
+#skinD .mc-b.hi { background: linear-gradient(to top, var(--acc2), var(--acc)60); box-shadow: 0 0 8px var(--acc)35; }
+#skinD .dp-btns { display: flex; gap: 8px; }
+#skinD .dp-btn { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--brd); background: rgba(255,255,255,0.03); color: var(--muted); font-family: var(--fnt-h); font-size: 11px; cursor: pointer; letter-spacing: 1px; text-align: center; text-transform: uppercase; font-weight: 600; transition: all 0.15s; }
+#skinD .dp-btn:hover { border-color: var(--acc); color: var(--acc); box-shadow: 0 0 8px var(--acc)18; }
+#skinD .dp-btn.p { border-color: var(--acc); color: var(--acc); background: var(--acc-bg); box-shadow: 0 0 12px var(--acc)20; }
+</style>
+</head>
+<body>
+
+<!-- ── PICKER ── -->
+<div class="picker">
+  <span class="picker-label">Direction ▸</span>
+  <button class="pick-btn active" onclick="show('A')">A — Manuscrit Arcane</button>
+  <button class="pick-btn" onclick="show('B')">B — Machine Phyrexiane</button>
+  <button class="pick-btn" onclick="show('C')">C — Nexus de Guilde</button>
+  <button class="pick-btn" onclick="show('D')">D — Arena Pro</button>
+  <button class="pick-btn" style="border-color:#c4a040;color:#c4a040" onclick="show('E')">E — Forge Arcane ★</button>
+  <span class="note">E = layout correct + symboles officiels + textures card frame</span>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SKIN A — MANUSCRIT ARCANE
+════════════════════════════════════════════ -->
+<div id="skinA" class="page show">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="logo">
+        <div class="logo-title">Arcane DB</div>
+        <div class="logo-sub">Magic Builder</div>
+        <div class="logo-rule"></div>
+      </div>
+      <div class="nav">
+        <div class="nav-lbl">Navigation</div>
+        <div class="nv act"><span class="nv-icon">◆</span><span class="nv-txt">Mes Decks</span></div>
+        <div class="nv"><span class="nv-icon">◈</span><span class="nv-txt">Recherche</span></div>
+        <div class="nv"><span class="nv-icon">⟐</span><span class="nv-txt">Combos</span></div>
+        <div class="nv"><span class="nv-icon">★</span><span class="nv-txt">Favoris</span></div>
+      </div>
+      <div class="sidebar-sep"></div>
+      <div class="open-lbl">Tomes ouverts</div>
+      <div class="dk-row act"><div class="dk-dot"></div><div><div class="dk-nm">Elfes Tribaux</div><div class="dk-meta">Commander · 100c</div></div></div>
+      <div class="dk-row"><div class="dk-dot" style="opacity:0.3"></div><div><div class="dk-nm">Burn Rouge</div><div class="dk-meta">Standard · 60c</div></div></div>
+      <div class="sidebar-footer">
+        <div class="ft-stat"><span>Cartes</span><span>24 203</span></div>
+        <div class="ft-stat"><span>Decks</span><span>12</span></div>
+        <div class="ft-stat"><span>Langue</span><span>Français</span></div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="browser">
+        <div class="brow-head">
+          <div class="brow-title">Grimoire des Cartes</div>
+          <input class="search-inp" placeholder="Chercher dans les archives..." value="Llanowar">
+          <div class="filter-row">
+            <span class="fltr-lbl">Couleur :</span>
+            <button class="clr-btn W on">W</button>
+            <button class="clr-btn U">U</button>
+            <button class="clr-btn B">B</button>
+            <button class="clr-btn R">R</button>
+            <button class="clr-btn G on">G</button>
+            <div style="width:1px;height:18px;background:var(--brd);margin:0 4px"></div>
+            <button class="type-chip on">Créature</button>
+            <button class="type-chip">Rituel</button>
+            <button class="type-chip">Terrain</button>
+          </div>
+        </div>
+        <div class="card-grid">
+          <div class="card-tile"><div class="card-img">🌿</div><div class="card-body"><div class="card-name">Llanowar Elves</div><div class="card-type">Créature — Elfe Druide</div><div class="card-bar"><span class="rarity-dot r-c"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">🌳</div><div class="card-body"><div class="card-name">Elvish Mystic</div><div class="card-type">Créature — Elfe Druide</div><div class="card-bar"><span class="rarity-dot r-c"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">⚡</div><div class="card-body"><div class="card-name">Elvish Champion</div><div class="card-type">Créature — Elfe Noble</div><div class="card-bar"><span class="rarity-dot r-r"></span><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🏛️</div><div class="card-body"><div class="card-name">Gaea's Cradle</div><div class="card-type">Terrain légendaire</div><div class="card-bar"><span class="rarity-dot r-r"></span><span style="font-size:9px;color:var(--muted)">0</span></div></div></div>
+          <div class="card-tile"><div class="card-img">🌲</div><div class="card-body"><div class="card-name">Joraga Treespeaker</div><div class="card-type">Créature — Elfe Chaman</div><div class="card-bar"><span class="rarity-dot r-u"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">💥</div><div class="card-body"><div class="card-name">Craterhoof Behemoth</div><div class="card-type">Créature — Bête</div><div class="card-bar"><span class="rarity-dot r-m"></span><div class="mana"><span class="pip pip-2">6</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🔮</div><div class="card-body"><div class="card-name">Ezuri, Renegade</div><div class="card-type">Légende — Elfe Guerrier</div><div class="card-bar"><span class="rarity-dot r-r"></span><div class="mana"><span class="pip pip-2">2</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🍃</div><div class="card-body"><div class="card-name">Heritage Druid</div><div class="card-type">Créature — Elfe Druide</div><div class="card-bar"><span class="rarity-dot r-u"></span><span class="pip pip-g">G</span></div></div></div>
+        </div>
+      </div>
+      <div class="deck-panel">
+        <div class="dp-head">
+          <div class="dp-ornament">✦ ─ ─ ─ ─ ─ ─ ─ ─ ✦</div>
+          <div class="dp-title">Elfes Tribaux</div>
+          <div class="dp-format">Commander</div>
+        </div>
+        <div class="dp-tabs">
+          <div class="dp-tab act">Principal</div>
+          <div class="dp-tab">Réserve</div>
+          <div class="dp-tab">Cmdr</div>
+        </div>
+        <div class="dp-list">
+          <div class="dp-section">Créatures — 35</div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Llanowar Elves</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Elvish Mystic</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">2</div><div class="cr-n">Elvish Champion</div><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">1</div><div class="cr-n">Craterhoof Behemoth</div><div class="mana"><span class="pip pip-2">6</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">3</div><div class="cr-n">Heritage Druid</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Joraga Treespeaker</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="dp-section">Terrains — 22</div>
+          <div class="cr"><div class="cr-q">14</div><div class="cr-n">Forêt</div></div>
+          <div class="cr"><div class="cr-q">1</div><div class="cr-n">Gaea's Cradle</div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Nykthos, Shrine to Nyx</div></div>
+          <div class="dp-section">Rituels — 8</div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Collected Company</div><div class="mana"><span class="pip pip-2">4</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">3</div><div class="cr-n">Chord of Calling</div><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+        </div>
+        <div class="dp-footer">
+          <div class="mana-curve">
+            <div class="mc-b" style="height:30%"></div>
+            <div class="mc-b hi" style="height:90%"></div>
+            <div class="mc-b" style="height:58%"></div>
+            <div class="mc-b" style="height:32%"></div>
+            <div class="mc-b" style="height:18%"></div>
+            <div class="mc-b" style="height:10%"></div>
+            <div class="mc-b" style="height:5%"></div>
+          </div>
+          <div class="dp-btns">
+            <button class="dp-btn p">↑ Exporter</button>
+            <button class="dp-btn">↓ Importer</button>
+            <button class="dp-btn">⋯</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SKIN B — MACHINE PHYREXIANE
+════════════════════════════════════════════ -->
+<div id="skinB" class="page">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="logo">
+        <div class="logo-hex">⚙</div>
+        <div><div class="logo-title">MTGA.SYS</div><div class="logo-sub">BUILD MODULE v2.4</div></div>
+      </div>
+      <div class="nav">
+        <div class="nav-lbl">// Modules</div>
+        <div class="nv act"><span class="nv-icon">⊞</span>DECKS</div>
+        <div class="nv"><span class="nv-icon">⌕</span>SEARCH</div>
+        <div class="nv"><span class="nv-icon">⚡</span>COMBOS</div>
+        <div class="nv"><span class="nv-icon">◉</span>FAVS</div>
+      </div>
+      <div class="sidebar-sep"></div>
+      <div class="open-lbl">// Active Processes</div>
+      <div class="dk-row act"><div><div class="dk-nm">ELVES.DECK</div><div class="dk-meta">CMD · 100c</div></div></div>
+      <div class="dk-row"><div><div class="dk-nm">BURN_R.DECK</div><div class="dk-meta">STD · 60c</div></div></div>
+      <div class="sidebar-footer">
+        <div class="ft-stat"><span>DB_SIZE</span><span>24203</span></div>
+        <div class="ft-stat"><span>DECKS</span><span>12</span></div>
+        <div class="ft-stat"><span>STATUS</span><span style="color:#2ecc71">ONLINE</span></div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="browser">
+        <div class="brow-head">
+          <input class="search-inp" placeholder="> SEARCH_" value="Llanowar">
+          <div class="filter-row">
+            <button class="clr-btn W on">W</button>
+            <button class="clr-btn U">U</button>
+            <button class="clr-btn B">B</button>
+            <button class="clr-btn R">R</button>
+            <button class="clr-btn G on">G</button>
+            <div style="width:2px;height:20px;background:var(--acc);margin:0 4px;opacity:0.4"></div>
+            <button class="type-chip on">CREATURE</button>
+            <button class="type-chip">INSTANT</button>
+            <button class="type-chip">LAND</button>
+          </div>
+        </div>
+        <div class="card-grid">
+          <div class="card-tile"><div class="card-img">🌿</div><div class="card-body"><div class="card-name">LLANOWAR ELVES</div><div class="card-type">CREATURE — ELF DRUID</div><div class="card-bar"><span class="rarity-dot r-c"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">🌳</div><div class="card-body"><div class="card-name">ELVISH MYSTIC</div><div class="card-type">CREATURE — ELF DRUID</div><div class="card-bar"><span class="rarity-dot r-c"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">⚡</div><div class="card-body"><div class="card-name">ELVISH CHAMPION</div><div class="card-type">CREATURE — ELF NOBLE</div><div class="card-bar"><span class="rarity-dot r-r"></span><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🏛️</div><div class="card-body"><div class="card-name">GAEA'S CRADLE</div><div class="card-type">LEGENDARY LAND</div><div class="card-bar"><span class="rarity-dot r-r"></span></div></div></div>
+          <div class="card-tile"><div class="card-img">🌲</div><div class="card-body"><div class="card-name">JORAGA TREESPEAKER</div><div class="card-type">CREATURE — ELF SHAMAN</div><div class="card-bar"><span class="rarity-dot r-u"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">💥</div><div class="card-body"><div class="card-name">CRATERHOOF</div><div class="card-type">CREATURE — BEAST</div><div class="card-bar"><span class="rarity-dot r-m"></span><div class="mana"><span class="pip pip-2">6</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🔮</div><div class="card-body"><div class="card-name">EZURI, RENEGADE</div><div class="card-type">LEGENDARY CREATURE</div><div class="card-bar"><span class="rarity-dot r-r"></span><div class="mana"><span class="pip pip-2">2</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🍃</div><div class="card-body"><div class="card-name">HERITAGE DRUID</div><div class="card-type">CREATURE — ELF DRUID</div><div class="card-bar"><span class="rarity-dot r-u"></span><span class="pip pip-g">G</span></div></div></div>
+        </div>
+      </div>
+      <div class="deck-panel">
+        <div class="dp-head">
+          <div class="dp-system">// ACTIVE DECK</div>
+          <div class="dp-title">ELVES TRIBAL</div>
+          <div class="dp-format">COMMANDER</div>
+        </div>
+        <div class="dp-tabs">
+          <div class="dp-tab act">MAIN</div>
+          <div class="dp-tab">SIDE</div>
+          <div class="dp-tab">CMDR</div>
+        </div>
+        <div class="dp-list">
+          <div class="dp-section">CREATURES :: 35</div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Llanowar Elves</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Elvish Mystic</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">2</div><div class="cr-n">Elvish Champion</div><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">1</div><div class="cr-n">Craterhoof Behemoth</div><div class="mana"><span class="pip pip-2">6</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">3</div><div class="cr-n">Heritage Druid</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Joraga Treespeaker</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="dp-section">LANDS :: 22</div>
+          <div class="cr"><div class="cr-q">14</div><div class="cr-n">Forest</div></div>
+          <div class="cr"><div class="cr-q">1</div><div class="cr-n">Gaea's Cradle</div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Nykthos, Shrine to Nyx</div></div>
+          <div class="dp-section">SPELLS :: 8</div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Collected Company</div><div class="mana"><span class="pip pip-2">4</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">3</div><div class="cr-n">Chord of Calling</div><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+        </div>
+        <div class="dp-footer">
+          <div class="mana-curve">
+            <div class="mc-b" style="height:30%"></div>
+            <div class="mc-b hi" style="height:90%"></div>
+            <div class="mc-b" style="height:58%"></div>
+            <div class="mc-b" style="height:32%"></div>
+            <div class="mc-b" style="height:18%"></div>
+            <div class="mc-b" style="height:10%"></div>
+            <div class="mc-b" style="height:5%"></div>
+          </div>
+          <div class="dp-btns">
+            <button class="dp-btn p">EXPORT</button>
+            <button class="dp-btn">IMPORT</button>
+            <button class="dp-btn">CONFIG</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SKIN C — NEXUS DE GUILDE
+════════════════════════════════════════════ -->
+<div id="skinC" class="page">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="logo">
+        <div class="logo-title">Guild Nexus</div>
+        <div class="logo-sub">Magic Builder</div>
+      </div>
+      <div class="nav">
+        <div class="nav-lbl">Navigation</div>
+        <div class="nv act"><span class="nv-icon">♦</span><span class="nv-txt">Mes Decks</span></div>
+        <div class="nv"><span class="nv-icon">⊕</span><span class="nv-txt">Recherche</span></div>
+        <div class="nv"><span class="nv-icon">✦</span><span class="nv-txt">Combos</span></div>
+        <div class="nv"><span class="nv-icon">✧</span><span class="nv-txt">Favoris</span></div>
+      </div>
+      <div class="sidebar-sep"></div>
+      <div class="open-lbl">Decks ouverts</div>
+      <div class="dk-row act"><div><div class="dk-nm">Elfes Tribaux</div><div class="dk-meta">Commander · 100c</div></div></div>
+      <div class="dk-row"><div><div class="dk-nm">Burn Rouge</div><div class="dk-meta">Standard · 60c</div></div></div>
+      <div class="sidebar-footer">
+        <div class="ft-stat"><span>Cartes</span><span>24 203</span></div>
+        <div class="ft-stat"><span>Decks</span><span>12</span></div>
+        <div class="ft-stat"><span>Langue</span><span>Français</span></div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="browser">
+        <div class="brow-head">
+          <div class="deco-line"></div>
+          <input class="search-inp" placeholder="Rechercher dans les archives..." value="Llanowar">
+          <div class="filter-row">
+            <button class="clr-btn W on">W</button>
+            <button class="clr-btn U">U</button>
+            <button class="clr-btn B">B</button>
+            <button class="clr-btn R">R</button>
+            <button class="clr-btn G on">G</button>
+            <div style="width:1px;height:18px;background:var(--brd);margin:0 5px"></div>
+            <button class="type-chip on">Créature</button>
+            <button class="type-chip">Rituel</button>
+            <button class="type-chip">Terrain</button>
+          </div>
+          <div class="deco-line"></div>
+        </div>
+        <div class="card-grid">
+          <div class="card-tile"><div class="card-img">🌿</div><div class="card-body"><div class="card-name">Llanowar Elves</div><div class="card-type">Créature — Elfe Druide</div><div class="card-bar"><span class="rarity-dot r-c"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">🌳</div><div class="card-body"><div class="card-name">Elvish Mystic</div><div class="card-type">Créature — Elfe Druide</div><div class="card-bar"><span class="rarity-dot r-c"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">⚡</div><div class="card-body"><div class="card-name">Elvish Champion</div><div class="card-type">Créature — Elfe Noble</div><div class="card-bar"><span class="rarity-dot r-r"></span><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🏛️</div><div class="card-body"><div class="card-name">Gaea's Cradle</div><div class="card-type">Terrain légendaire</div><div class="card-bar"><span class="rarity-dot r-r"></span></div></div></div>
+          <div class="card-tile"><div class="card-img">🌲</div><div class="card-body"><div class="card-name">Joraga Treespeaker</div><div class="card-type">Créature — Elfe Chaman</div><div class="card-bar"><span class="rarity-dot r-u"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">💥</div><div class="card-body"><div class="card-name">Craterhoof Behemoth</div><div class="card-type">Créature — Bête</div><div class="card-bar"><span class="rarity-dot r-m"></span><div class="mana"><span class="pip pip-2">6</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🔮</div><div class="card-body"><div class="card-name">Ezuri, Renegade</div><div class="card-type">Légende — Elfe Guerrier</div><div class="card-bar"><span class="rarity-dot r-r"></span><div class="mana"><span class="pip pip-2">2</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🍃</div><div class="card-body"><div class="card-name">Heritage Druid</div><div class="card-type">Créature — Elfe Druide</div><div class="card-bar"><span class="rarity-dot r-u"></span><span class="pip pip-g">G</span></div></div></div>
+        </div>
+      </div>
+      <div class="deck-panel">
+        <div class="dp-head">
+          <div class="dp-ornament">✦ — — — — ✦</div>
+          <div class="dp-title">Elfes Tribaux</div>
+          <div class="dp-format">Commander</div>
+        </div>
+        <div class="dp-tabs">
+          <div class="dp-tab act">Principal</div>
+          <div class="dp-tab">Réserve</div>
+          <div class="dp-tab">Cmdr</div>
+        </div>
+        <div class="dp-list">
+          <div class="dp-section">Créatures — 35</div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Llanowar Elves</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Elvish Mystic</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">2</div><div class="cr-n">Elvish Champion</div><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">1</div><div class="cr-n">Craterhoof Behemoth</div><div class="mana"><span class="pip pip-2">6</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">3</div><div class="cr-n">Heritage Druid</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Joraga Treespeaker</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="dp-section">Terrains — 22</div>
+          <div class="cr"><div class="cr-q">14</div><div class="cr-n">Forêt</div></div>
+          <div class="cr"><div class="cr-q">1</div><div class="cr-n">Gaea's Cradle</div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Nykthos, Shrine to Nyx</div></div>
+          <div class="dp-section">Rituels — 8</div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Collected Company</div><div class="mana"><span class="pip pip-2">4</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">3</div><div class="cr-n">Chord of Calling</div><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+        </div>
+        <div class="dp-footer">
+          <div class="mana-curve">
+            <div class="mc-b" style="height:30%"></div>
+            <div class="mc-b hi" style="height:90%"></div>
+            <div class="mc-b" style="height:58%"></div>
+            <div class="mc-b" style="height:32%"></div>
+            <div class="mc-b" style="height:18%"></div>
+            <div class="mc-b" style="height:10%"></div>
+            <div class="mc-b" style="height:5%"></div>
+          </div>
+          <div class="dp-btns">
+            <button class="dp-btn p">↑ Exporter</button>
+            <button class="dp-btn">↓ Importer</button>
+            <button class="dp-btn">⋯</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SKIN D — ARENA PRO
+════════════════════════════════════════════ -->
+<div id="skinD" class="page">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="logo">
+        <div class="logo-gem">◈</div>
+        <div><div class="logo-title">MTGA Build</div><div class="logo-sub">Arena Edition</div></div>
+      </div>
+      <div class="nav">
+        <div class="nav-lbl">Navigation</div>
+        <div class="nv act"><span class="nv-icon">▶</span>Mes Decks</div>
+        <div class="nv"><span class="nv-icon">▶</span>Recherche</div>
+        <div class="nv"><span class="nv-icon">▶</span>Combos</div>
+        <div class="nv"><span class="nv-icon">▶</span>Favoris</div>
+      </div>
+      <div class="sidebar-sep"></div>
+      <div class="open-lbl">En cours</div>
+      <div class="dk-row act"><div class="dk-dot"></div><div class="dk-nm">Elfes Tribaux</div></div>
+      <div class="dk-row"><div class="dk-dot" style="background:var(--muted);box-shadow:none;opacity:0.4"></div><div class="dk-nm">Burn Rouge</div></div>
+      <div class="sidebar-footer">
+        <div class="ft-stat"><span>Cartes</span><span>24 203</span></div>
+        <div class="ft-stat"><span>Decks</span><span>12</span></div>
+        <div class="ft-stat"><span>Langue</span><span>FR</span></div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="browser">
+        <div class="brow-head">
+          <input class="search-inp" placeholder="🔍  Rechercher une carte..." value="Llanowar">
+          <div class="filter-row">
+            <button class="clr-btn W on">W</button>
+            <button class="clr-btn U">U</button>
+            <button class="clr-btn B">B</button>
+            <button class="clr-btn R">R</button>
+            <button class="clr-btn G on">G</button>
+            <div style="width:1px;height:18px;background:var(--brd);margin:0 6px"></div>
+            <button class="type-chip on">Créature</button>
+            <button class="type-chip">Rituel</button>
+            <button class="type-chip">Terrain</button>
+          </div>
+        </div>
+        <div class="card-grid">
+          <div class="card-tile"><div class="card-img">🌿</div><div class="card-body"><div class="card-name">Llanowar Elves</div><div class="card-type">Créature — Elfe Druide</div><div class="card-bar"><span class="rarity-dot r-c"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">🌳</div><div class="card-body"><div class="card-name">Elvish Mystic</div><div class="card-type">Créature — Elfe Druide</div><div class="card-bar"><span class="rarity-dot r-c"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">⚡</div><div class="card-body"><div class="card-name">Elvish Champion</div><div class="card-type">Créature — Elfe Noble</div><div class="card-bar"><span class="rarity-dot r-r"></span><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🏛️</div><div class="card-body"><div class="card-name">Gaea's Cradle</div><div class="card-type">Terrain légendaire</div><div class="card-bar"><span class="rarity-dot r-r"></span></div></div></div>
+          <div class="card-tile"><div class="card-img">🌲</div><div class="card-body"><div class="card-name">Joraga Treespeaker</div><div class="card-type">Créature — Elfe Chaman</div><div class="card-bar"><span class="rarity-dot r-u"></span><span class="pip pip-g">G</span></div></div></div>
+          <div class="card-tile"><div class="card-img">💥</div><div class="card-body"><div class="card-name">Craterhoof Behemoth</div><div class="card-type">Créature — Bête</div><div class="card-bar"><span class="rarity-dot r-m"></span><div class="mana"><span class="pip pip-2">6</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🔮</div><div class="card-body"><div class="card-name">Ezuri, Renegade</div><div class="card-type">Légende — Elfe Guerrier</div><div class="card-bar"><span class="rarity-dot r-r"></span><div class="mana"><span class="pip pip-2">2</span><span class="pip pip-g">G</span></div></div></div></div>
+          <div class="card-tile"><div class="card-img">🍃</div><div class="card-body"><div class="card-name">Heritage Druid</div><div class="card-type">Créature — Elfe Druide</div><div class="card-bar"><span class="rarity-dot r-u"></span><span class="pip pip-g">G</span></div></div></div>
+        </div>
+      </div>
+      <div class="deck-panel">
+        <div class="dp-head">
+          <div class="dp-title">Elfes Tribaux</div>
+          <div class="dp-format">Commander</div>
+        </div>
+        <div class="dp-tabs">
+          <div class="dp-tab act">Principal</div>
+          <div class="dp-tab">Réserve</div>
+          <div class="dp-tab">Cmdr</div>
+        </div>
+        <div class="dp-list">
+          <div class="dp-section">Créatures — 35</div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Llanowar Elves</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Elvish Mystic</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">2</div><div class="cr-n">Elvish Champion</div><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">1</div><div class="cr-n">Craterhoof Behemoth</div><div class="mana"><span class="pip pip-2">6</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">3</div><div class="cr-n">Heritage Druid</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Joraga Treespeaker</div><div class="mana"><span class="pip pip-g">G</span></div></div>
+          <div class="dp-section">Terrains — 22</div>
+          <div class="cr"><div class="cr-q">14</div><div class="cr-n">Forêt</div></div>
+          <div class="cr"><div class="cr-q">1</div><div class="cr-n">Gaea's Cradle</div></div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Nykthos, Shrine to Nyx</div></div>
+          <div class="dp-section">Rituels — 8</div>
+          <div class="cr"><div class="cr-q">4</div><div class="cr-n">Collected Company</div><div class="mana"><span class="pip pip-2">4</span><span class="pip pip-g">G</span></div></div>
+          <div class="cr"><div class="cr-q">3</div><div class="cr-n">Chord of Calling</div><div class="mana"><span class="pip pip-g">G</span><span class="pip pip-g">G</span><span class="pip pip-g">G</span></div></div>
+        </div>
+        <div class="dp-footer">
+          <div class="mana-curve">
+            <div class="mc-b" style="height:30%"></div>
+            <div class="mc-b hi" style="height:90%"></div>
+            <div class="mc-b" style="height:58%"></div>
+            <div class="mc-b" style="height:32%"></div>
+            <div class="mc-b" style="height:18%"></div>
+            <div class="mc-b" style="height:10%"></div>
+            <div class="mc-b" style="height:5%"></div>
+          </div>
+          <div class="dp-btns">
+            <button class="dp-btn p">↑ Exporter</button>
+            <button class="dp-btn">↓ Importer</button>
+            <button class="dp-btn">⋯</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SKIN E — FORGE ARCANE
+     Layout comme l'app réelle + textures card frame + symboles officiels
+════════════════════════════════════════════ -->
+<div id="skinE" class="page">
+  <div class="shell">
+
+    <!-- SIDEBAR -->
+    <div class="e-sidebar">
+      <div class="e-logo">
+        <div class="e-logo-symbol">
+          <i class="ms ms-planeswalker"></i>
+        </div>
+        <div>
+          <div class="e-logo-title">MTGA Builder</div>
+          <div class="e-logo-sub">Deck Forge</div>
+        </div>
+      </div>
+      <div class="e-nav">
+        <div class="e-nav-lbl">Navigation</div>
+        <div class="e-nv act"><span class="e-nv-icon">⊞</span><span class="e-nv-txt">Mes Decks</span></div>
+        <div class="e-nv"><span class="e-nv-icon">⚡</span><span class="e-nv-txt">Combos</span></div>
+        <div class="e-nv"><span class="e-nv-icon">★</span><span class="e-nv-txt">Favoris</span></div>
+      </div>
+      <div class="e-sep"></div>
+      <div class="e-open-lbl">Decks en cours</div>
+      <div class="e-dk act"><div class="e-dk-dot"></div><div><div class="e-dk-nm">zzdes</div><div class="e-dk-meta">Standard · 10c</div></div></div>
+      <div class="e-dk"><div class="e-dk-dot" style="opacity:0.3"></div><div><div class="e-dk-nm">gros pd</div><div class="e-dk-meta">Commander · 100c</div></div></div>
+      <div class="e-dk"><div class="e-dk-dot" style="opacity:0.3"></div><div><div class="e-dk-nm">ardtest</div><div class="e-dk-meta">Standard · 60c</div></div></div>
+      <div class="e-footer">
+        <div class="e-ft-row"><span>Cartes</span><span>20 729</span></div>
+        <div class="e-ft-row"><span>Noms FR</span><span>19 662</span></div>
+        <div class="e-ft-row"><span>Decks</span><span>7</span></div>
+        <div class="e-ft-row" style="margin-top:4px"><span>Langue</span><span>FR Français</span></div>
+      </div>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div class="e-main">
+
+      <!-- DECK TOPBAR (fidèle au screen 1) -->
+      <div class="e-topbar">
+        <div class="e-topbar-left">
+          <span class="e-deck-name">zzdes</span>
+          <span class="e-format-badge">Standard</span>
+          <span class="e-card-count">10 cartes</span>
+        </div>
+        <div class="e-topbar-right">
+          <button class="e-tb-btn">📊 Stats</button>
+          <button class="e-tb-btn p">↑ Export MTGA</button>
+          <div class="e-artwork-thumb">🌿</div>
+        </div>
+      </div>
+
+      <!-- CONTENT : browser + deck panel -->
+      <div class="e-content">
+
+        <!-- BROWSER -->
+        <div class="e-browser">
+
+          <!-- Barre de recherche -->
+          <div class="e-search-row">
+            <input class="e-search" placeholder="Chercher une carte (EN ou FR)..." value="Llanowar">
+          </div>
+
+          <!-- Filtres couleur — VRAIS symboles de mana Magic -->
+          <div class="e-filter-row">
+            <button class="e-ms-btn on"><i class="ms ms-w ms-cost ms-shadow"></i></button>
+            <button class="e-ms-btn"><i class="ms ms-u ms-cost ms-shadow"></i></button>
+            <button class="e-ms-btn"><i class="ms ms-b ms-cost ms-shadow"></i></button>
+            <button class="e-ms-btn"><i class="ms ms-r ms-cost ms-shadow"></i></button>
+            <button class="e-ms-btn on"><i class="ms ms-g ms-cost ms-shadow"></i></button>
+            <button class="e-ms-btn"><i class="ms ms-m ms-cost ms-shadow"></i></button>
+            <button class="e-ms-btn"><i class="ms ms-c ms-cost ms-shadow"></i></button>
+            <div class="e-filter-sep"></div>
+            <button class="e-type-chip on">Créature</button>
+            <button class="e-type-chip">Éphémère</button>
+            <button class="e-type-chip">Terrain</button>
+            <button class="e-type-chip">Enchant.</button>
+          </div>
+
+          <!-- Filtre CMC — comme screen 1 -->
+          <div class="e-cmc-row">
+            <span class="e-cmc-lbl">CMC :</span>
+            <button class="e-cmc-btn">0</button>
+            <button class="e-cmc-btn on">1</button>
+            <button class="e-cmc-btn on">2</button>
+            <button class="e-cmc-btn">3</button>
+            <button class="e-cmc-btn">4</button>
+            <button class="e-cmc-btn">5</button>
+            <button class="e-cmc-btn">6</button>
+            <button class="e-cmc-btn">7+</button>
+          </div>
+
+          <!-- Grille de cartes -->
+          <div class="e-card-grid">
+            <div class="e-card-tile">
+              <div class="e-card-img">🌿</div>
+              <div class="e-card-body">
+                <div class="e-card-name">Llanowar Elves</div>
+                <div class="e-card-type">Créature — Elfe Druide</div>
+                <div class="e-card-bar">
+                  <span class="rarity-dot r-c"></span>
+                  <i class="ms ms-g ms-cost ms-shadow"></i>
+                </div>
+              </div>
+            </div>
+            <div class="e-card-tile">
+              <div class="e-card-img">🌳</div>
+              <div class="e-card-body">
+                <div class="e-card-name">Elvish Mystic</div>
+                <div class="e-card-type">Créature — Elfe Druide</div>
+                <div class="e-card-bar">
+                  <span class="rarity-dot r-c"></span>
+                  <i class="ms ms-g ms-cost ms-shadow"></i>
+                </div>
+              </div>
+            </div>
+            <div class="e-card-tile">
+              <div class="e-card-img">⚡</div>
+              <div class="e-card-body">
+                <div class="e-card-name">Elvish Champion</div>
+                <div class="e-card-type">Créature — Elfe Noble</div>
+                <div class="e-card-bar">
+                  <span class="rarity-dot r-r"></span>
+                  <span style="display:flex;gap:1px"><i class="ms ms-g ms-cost ms-shadow"></i><i class="ms ms-g ms-cost ms-shadow"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="e-card-tile">
+              <div class="e-card-img">🏛️</div>
+              <div class="e-card-body">
+                <div class="e-card-name">Gaea's Cradle</div>
+                <div class="e-card-type">Terrain légendaire</div>
+                <div class="e-card-bar">
+                  <span class="rarity-dot r-r"></span>
+                  <i class="ms ms-t ms-shadow" style="font-size:11px;color:var(--muted)"></i>
+                </div>
+              </div>
+            </div>
+            <div class="e-card-tile">
+              <div class="e-card-img">🌲</div>
+              <div class="e-card-body">
+                <div class="e-card-name">Joraga Treespeaker</div>
+                <div class="e-card-type">Créature — Elfe Chaman</div>
+                <div class="e-card-bar">
+                  <span class="rarity-dot r-u"></span>
+                  <i class="ms ms-g ms-cost ms-shadow"></i>
+                </div>
+              </div>
+            </div>
+            <div class="e-card-tile">
+              <div class="e-card-img">💥</div>
+              <div class="e-card-body">
+                <div class="e-card-name">Craterhoof Behemoth</div>
+                <div class="e-card-type">Créature — Bête</div>
+                <div class="e-card-bar">
+                  <span class="rarity-dot r-m"></span>
+                  <span style="display:flex;gap:1px"><i class="ms ms-6 ms-cost ms-shadow"></i><i class="ms ms-g ms-cost ms-shadow"></i><i class="ms ms-g ms-cost ms-shadow"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="e-card-tile">
+              <div class="e-card-img">🔮</div>
+              <div class="e-card-body">
+                <div class="e-card-name">Ezuri, Renegade</div>
+                <div class="e-card-type">Légende — Elfe Guerrier</div>
+                <div class="e-card-bar">
+                  <span class="rarity-dot r-r"></span>
+                  <span style="display:flex;gap:1px"><i class="ms ms-2 ms-cost ms-shadow"></i><i class="ms ms-g ms-cost ms-shadow"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="e-card-tile">
+              <div class="e-card-img">🍃</div>
+              <div class="e-card-body">
+                <div class="e-card-name">Heritage Druid</div>
+                <div class="e-card-type">Créature — Elfe Druide</div>
+                <div class="e-card-bar">
+                  <span class="rarity-dot r-u"></span>
+                  <i class="ms ms-g ms-cost ms-shadow"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DECK PANEL (droite) -->
+        <div class="e-deck-panel">
+          <div class="e-dp-tabs">
+            <div class="e-dp-tab act">Main <span>10/60</span></div>
+            <div class="e-dp-tab">Side <span>0</span></div>
+            <div class="e-dp-tab">⚡ Combos</div>
+            <div class="e-dp-tab"># CMC</div>
+          </div>
+          <div class="e-dp-list">
+            <div class="e-dp-section">Créatures — 6</div>
+            <div class="e-cr">
+              <div class="e-cr-q">2</div>
+              <div class="e-cr-n">A-Archétype d'Eiganjo</div>
+              <span style="display:flex;gap:1px"><i class="ms ms-1 ms-cost ms-shadow"></i><i class="ms ms-w ms-cost ms-shadow"></i></span>
+            </div>
+            <div class="e-cr">
+              <div class="e-cr-q">3</div>
+              <div class="e-cr-n">A-Guide des âmes</div>
+              <span style="display:flex;gap:1px"><i class="ms ms-w ms-cost ms-shadow"></i></span>
+            </div>
+            <div class="e-cr">
+              <div class="e-cr-q">1</div>
+              <div class="e-cr-n">A-Licorne inébranlable</div>
+              <span style="display:flex;gap:1px"><i class="ms ms-2 ms-cost ms-shadow"></i><i class="ms ms-w ms-cost ms-shadow"></i></span>
+            </div>
+            <div class="e-dp-section">Rituels / Éphémères — 4</div>
+            <div class="e-cr">
+              <div class="e-cr-q">3</div>
+              <div class="e-cr-n">Accueil d'Ajani</div>
+              <span style="display:flex;gap:1px"><i class="ms ms-1 ms-cost ms-shadow"></i><i class="ms ms-w ms-cost ms-shadow"></i></span>
+            </div>
+            <div class="e-cr">
+              <div class="e-cr-q">1</div>
+              <div class="e-cr-n">Ange lamefeu</div>
+              <span style="display:flex;gap:1px"><i class="ms ms-3 ms-cost ms-shadow"></i><i class="ms ms-w ms-cost ms-shadow"></i><i class="ms ms-w ms-cost ms-shadow"></i></span>
+            </div>
+          </div>
+          <div class="e-dp-footer">
+            <div class="e-curve">
+              <div class="e-curve-b" style="height:20%"></div>
+              <div class="e-curve-b hi" style="height:85%"></div>
+              <div class="e-curve-b" style="height:55%"></div>
+              <div class="e-curve-b" style="height:30%"></div>
+              <div class="e-curve-b" style="height:15%"></div>
+              <div class="e-curve-b" style="height:8%"></div>
+              <div class="e-curve-b" style="height:4%"></div>
+            </div>
+            <div class="e-dp-btns">
+              <button class="e-dp-btn p">↑ Export MTGA</button>
+              <button class="e-dp-btn">↓ Import</button>
+              <button class="e-dp-btn">⋯</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /e-content -->
+    </div><!-- /e-main -->
+  </div><!-- /shell -->
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+  document.querySelectorAll('.pick-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('skin' + id).classList.add('show');
+  document.querySelectorAll('.pick-btn').forEach(b => {
+    if (b.textContent.startsWith(id)) b.classList.add('active');
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+/* ─── Totaux ───────────────────────── */
+.totals {
+  display: flex;
+  gap: 8px;
+}
+
+.totalBox {
+  flex: 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.totalNum {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-light);
+  line-height: 1;
+}
+
+.totalLabel {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* ─── Section générique ─────────────── */
+.section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sectionTitle {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+/* ─── Types ──────────────────────────── */
+.typeRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.typeIcon { font-size: 11px; width: 14px; text-align: center; }
+
+.typeLabel {
+  color: var(--text-muted);
+  min-width: 76px;
+  font-size: 11px;
+}
+
+.typeBar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-hover);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.typeBarFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.typeCount {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 12px;
+  min-width: 20px;
+  text-align: right;
+}
+
+/* ─── Couleurs ───────────────────────── */
+.colorRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.colorPip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.colorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  flex-shrink: 0;
+}
+
+.colorCount {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* ─── Land % ────────────────────────── */
+.landStatRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.landIcon { font-size: 13px; flex-shrink: 0; }
+
+.landBarWrap {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-hover);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.landBarFill {
+  height: 100%;
+  background: #3ab87c;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.landFraction {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.landPct {
+  font-size: 12px;
+  font-weight: 700;
+  color: #3ab87c;
+  min-width: 34px;
+  text-align: right;
+}
+
+/* ─── Warning ──────────────────────── */
+.warning {
+  background: #c0392b22;
+  border: 1px solid #c0392b55;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: #e74c3c;
+}

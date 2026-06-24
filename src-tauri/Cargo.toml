@@ -1,0 +1,61 @@
+[package]
+name = "mtga-deck-builder"
+version = "1.0.0"
+description = "MTGA Deck Builder — application locale offline"
+authors = []
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "mtga_deck_builder_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# SQLite : bundled = pas besoin de SQLite système
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# Serveur HTTP local pour l'extension Firefox
+axum = { version = "0.7", features = ["tokio"] }
+tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.5", features = ["cors"] }
+
+# HTTP client pour l'enrichissement FR depuis Scryfall
+reqwest = { version = "0.12", features = ["json"] }
+
+# Décompression des fichiers .mtga (gzip)
+flate2 = "1"
+
+# Utilitaires
+anyhow = "1"
+once_cell = "1"
+
+# Lecture mémoire du processus MTGA (Windows uniquement)
+[target.'cfg(target_os = "windows")'.dependencies]
+winapi = { version = "0.3", features = [
+    "tlhelp32",
+    "memoryapi",
+    "processthreadsapi",
+    "winnt",
+    "handleapi",
+    "minwindef",
+] }
+
+[profile.dev]
+incremental = true
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

@@ -1,0 +1,113 @@
+/* ─── MTGA Deck Builder — Styles globaux ──────────────────────────────────── */
+
+:root {
+  --bg-primary:   #0f0f13;
+  --bg-secondary: #1a1a24;
+  --bg-card:      #22223a;
+  --bg-hover:     #2a2a42;
+  --border:       #3a3a5c;
+  --accent:       #7c6af7;
+  --accent-light: #a89cf8;
+  --text-primary: #e8e6f0;
+  --text-muted:   #8a8aaa;
+  --rarity-common:   #c8c8c8;
+  --rarity-uncommon: #b0c4de;
+  --rarity-rare:     #d4af37;
+  --rarity-mythic:   #ff6b35;
+
+  --color-w: #f9fae0;
+  --color-u: #4a90d9;
+  --color-b: #8b6fce;
+  --color-r: #e05a3a;
+  --color-g: #3ab87c;
+  --color-c: #aaaaaa;
+
+  --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Scrollbars custom */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Boutons */
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.15s, opacity 0.15s;
+}
+
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent-light); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Inputs */
+input, select, textarea {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+}
+input::placeholder { color: var(--text-muted); }
+
+/* Utilitaires */
+.text-muted   { color: var(--text-muted); }
+.text-accent  { color: var(--accent); }
+.flex         { display: flex; }
+.flex-col     { flex-direction: column; }
+.items-center { align-items: center; }
+.gap-2        { gap: 8px; }
+.gap-4        { gap: 16px; }
+
+/* Rareté */
+.rarity-common   { color: var(--rarity-common); }
+.rarity-uncommon { color: var(--rarity-uncommon); }
+.rarity-rare     { color: var(--rarity-rare); }
+.rarity-mythic   { color: var(--rarity-mythic); }
