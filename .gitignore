@@ -16,3 +16,8 @@ scripts/data/
 CLAUDE.md
 CONTEXTE_PROJET.md
 src/components/_backup_*.tsx.txt
+
+# Local design mockups / drafts (not for public repo)
+art-directions.html
+mockup-designs.html
+skin-editor.html
