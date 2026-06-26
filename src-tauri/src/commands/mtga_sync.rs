@@ -1065,39 +1065,72 @@ fn backfill_arena_ids(raw_path: &Path, app_db: &Path) -> Result<usize, String> {
     if !is_sqlite_file(raw_path) {
         return Ok(0);
     }
-    // Map (set en minuscules, numéro de collection) → GrpId, construite une fois.
     let raw = rusqlite::Connection::open(raw_path).map_err(|e| e.to_string())?;
-    let mut stmt = raw
-        .prepare(
-            "SELECT lower(ExpansionCode), CollectorNumber, GrpId FROM Cards \
-             WHERE ExpansionCode IS NOT NULL AND ExpansionCode != '' \
-               AND CollectorNumber IS NOT NULL AND CollectorNumber != '' \
-               AND IsPrimaryCard = 1",
-        )
-        .map_err(|e| e.to_string())?;
+
+    // ── Passe 1 : index (set minuscule, numéro de collection) → GrpId ─────────
+    // Match exact et non ambigu (set+numéro est unique). Couvre la majorité des
+    // sets récents non backfillés par Scryfall (ex : spm).
     let mut grp_by_key: HashMap<(String, String), i64> = HashMap::new();
-    let mut q = stmt.query([]).map_err(|e| e.to_string())?;
-    while let Some(r) = q.next().map_err(|e| e.to_string())? {
-        let set: String = r.get(0).map_err(|e| e.to_string())?;
-        let coll: String = r.get(1).map_err(|e| e.to_string())?;
-        let grp: i64 = r.get(2).map_err(|e| e.to_string())?;
-        grp_by_key.entry((set, coll)).or_insert(grp);
+    // ── Passe 2 (préparation) : index nom anglais normalisé → GrpId ──────────
+    // Le raw MTGA range les cartes Alchemy sous des codes annuels (Y22..Y26) alors
+    // que Scryfall utilise des codes par-set (yeoe, yotj…) avec des numéros de
+    // collection différents : le match (set, numéro) échoue donc totalement pour
+    // elles. On les rattrape par leur nom anglais, à condition qu'il soit unique
+    // dans le pool Arena (sinon on s'abstient pour éviter un faux appariement).
+    let en_loc = load_loc_table(&raw, "Localizations_enUS").unwrap_or_default();
+    let mut grp_by_name: HashMap<String, i64> = HashMap::new();
+    let mut ambiguous_names: std::collections::HashSet<String> = std::collections::HashSet::new();
+
+    {
+        let mut stmt = raw
+            .prepare(
+                "SELECT lower(ExpansionCode), CollectorNumber, GrpId, TitleId FROM Cards \
+                 WHERE ExpansionCode IS NOT NULL AND ExpansionCode != '' \
+                   AND IsPrimaryCard = 1",
+            )
+            .map_err(|e| e.to_string())?;
+        let mut q = stmt.query([]).map_err(|e| e.to_string())?;
+        while let Some(r) = q.next().map_err(|e| e.to_string())? {
+            let set: String = r.get(0).map_err(|e| e.to_string())?;
+            let coll: Option<String> = r.get(1).map_err(|e| e.to_string())?;
+            let grp: i64 = r.get(2).map_err(|e| e.to_string())?;
+            let title: Option<i64> = r.get(3).map_err(|e| e.to_string())?;
+
+            if let Some(c) = coll.as_ref().filter(|c| !c.is_empty()) {
+                grp_by_key.entry((set.clone(), c.clone())).or_insert(grp);
+            }
+
+            if let Some(name) = title.and_then(|t| en_loc.get(&t)) {
+                let key = name.trim().to_lowercase();
+                if !key.is_empty() {
+                    match grp_by_name.get(&key) {
+                        Some(g) if *g != grp => { ambiguous_names.insert(key); }
+                        None => { grp_by_name.insert(key, grp); }
+                        _ => {}
+                    }
+                }
+            }
+        }
+    }
+    // On retire les noms portés par plusieurs cartes distinctes (reprints…).
+    for k in &ambiguous_names {
+        grp_by_name.remove(k);
     }
 
     let conn = crate::database::open(app_db).map_err(|e| e.to_string())?;
 
     // Un seul balayage des cartes sans arena_id, puis UPDATE par clé primaire (indexée).
     // `id` est l'UUID Scryfall (TEXT), pas un entier.
-    let targets: Vec<(String, String, String)> = {
+    let targets: Vec<(String, String, Option<String>, Option<String>)> = {
         let mut sel = conn
             .prepare(
-                "SELECT id, lower(set_code), collector_number FROM cards \
-                 WHERE arena_id IS NULL AND set_code IS NOT NULL AND collector_number IS NOT NULL",
+                "SELECT id, lower(set_code), collector_number, name_en FROM cards \
+                 WHERE arena_id IS NULL AND set_code IS NOT NULL",
             )
             .map_err(|e| e.to_string())?;
-        let rows: Vec<(String, String, String)> = sel
+        let rows: Vec<(String, String, Option<String>, Option<String>)> = sel
             .query_map([], |r| {
-                Ok((r.get(0)?, r.get(1)?, r.get(2)?))
+                Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?))
             })
             .map_err(|e| e.to_string())?
             .filter_map(|r| r.ok())
@@ -1111,8 +1144,17 @@ fn backfill_arena_ids(raw_path: &Path, app_db: &Path) -> Result<usize, String> {
         let mut up = conn
             .prepare("UPDATE cards SET arena_id = ?1 WHERE id = ?2")
             .map_err(|e| e.to_string())?;
-        for (id, set, coll) in &targets {
-            if let Some(grp) = grp_by_key.get(&(set.clone(), coll.clone())) {
+        for (id, set, coll, name) in &targets {
+            // 1) match exact (set, numéro) ; 2) repli sur le nom anglais unique.
+            let grp = coll
+                .as_ref()
+                .filter(|c| !c.is_empty())
+                .and_then(|c| grp_by_key.get(&(set.clone(), c.clone())).copied())
+                .or_else(|| {
+                    name.as_ref()
+                        .and_then(|n| grp_by_name.get(&n.trim().to_lowercase()).copied())
+                });
+            if let Some(grp) = grp {
                 updated += up.execute(params![grp, id]).map_err(|e| e.to_string())?;
             }
         }
