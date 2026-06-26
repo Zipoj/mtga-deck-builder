@@ -732,19 +732,14 @@ export default function IntegratedDeckBuilder({ deckData, onChange, onToast, dis
 
   // Sets triés par date de sortie Arena (plus récent en premier), filtrés sur les sets Arena uniquement
   const sortedSets = useMemo(() => {
-    let arenaCodes: Set<string> | null = null;
-    if (scryfallSets.length > 0) {
-      arenaCodes = new Set(scryfallSets.filter(s => !!s.arena_code).map(s => s.code));
-    } else {
-      try {
-        const cached = localStorage.getItem("scryfall_arena_set_codes");
-        if (cached) arenaCodes = new Set(JSON.parse(cached) as string[]);
-      } catch { /* ignore */ }
-    }
+    // La liste vient déjà de `get_sets`, qui ne renvoie que les sets présents sur
+    // Arena (cartes avec arena_id, ≥10). On ne re-filtre PAS par le champ Scryfall
+    // `arena_code` : beaucoup de sets pourtant jouables sur Arena (Final Fantasy,
+    // les commandants, les sets Alchemy…) n'en ont pas, et étaient donc masqués à
+    // tort de la liste déroulante.
     return [...sets]
-      .filter(s => !arenaCodes || arenaCodes.has(s.code))
       .sort((a, b) => (setDates[b.code] ?? "").localeCompare(setDates[a.code] ?? ""));
-  }, [sets, setDates, scryfallSets]);
+  }, [sets, setDates]);
 
   // ── Virtual grid ──────────────────────────────────────────────────────────
   // Columns = how many tiles fit side-by-side given container width + zoom
