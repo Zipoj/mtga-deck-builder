@@ -136,15 +136,48 @@ pub async fn enrich_loc_images(
             scryfall_lang, page
         );
 
-        let resp = match client.get(&url).send().await {
-            Ok(r) => r,
-            Err(e) => {
+        // Récupération de la page avec tolérance au rate limit Scryfall (429) et aux
+        // erreurs réseau transitoires : on retente la MÊME page avec un backoff progressif.
+        let mut attempt = 0u32;
+        let resp = loop {
+            attempt += 1;
+
+            let r = match client.get(&url).send().await {
+                Ok(r) => r,
+                Err(e) => {
+                    // Erreur réseau transitoire : quelques tentatives avant d'abandonner
+                    if attempt <= 5 {
+                        tokio::time::sleep(std::time::Duration::from_secs(3)).await;
+                        continue;
+                    }
+                    let _ = window.emit("enrich-fr-progress", EnrichProgress {
+                        page, total_updated, done: true,
+                        error: Some(e.to_string()),
+                    });
+                    return Err(e.to_string());
+                }
+            };
+
+            // 429 Too Many Requests : on respecte l'en-tête Retry-After si présent,
+            // sinon backoff croissant (2s, 4s, … plafonné à 30s).
+            if r.status() == reqwest::StatusCode::TOO_MANY_REQUESTS {
+                if attempt <= 8 {
+                    let wait = r.headers()
+                        .get(reqwest::header::RETRY_AFTER)
+                        .and_then(|v| v.to_str().ok())
+                        .and_then(|v| v.parse::<u64>().ok())
+                        .unwrap_or_else(|| (2 * attempt as u64).clamp(2, 30));
+                    tokio::time::sleep(std::time::Duration::from_secs(wait)).await;
+                    continue;
+                }
                 let _ = window.emit("enrich-fr-progress", EnrichProgress {
                     page, total_updated, done: true,
-                    error: Some(e.to_string()),
+                    error: Some("Scryfall limite les requêtes (429). Réessaie dans quelques minutes — la progression est sauvegardée, le téléchargement reprendra là où il s'est arrêté.".into()),
                 });
-                return Err(e.to_string());
+                return Err("HTTP 429 (rate limit) persistant".into());
             }
+
+            break r;
         };
 
         if resp.status() == reqwest::StatusCode::NOT_FOUND {
@@ -204,8 +237,9 @@ pub async fn enrich_loc_images(
         if !has_more { break; }
         page += 1;
 
-        // Respect du rate limit Scryfall (max 10 req/s)
-        tokio::time::sleep(std::time::Duration::from_millis(110)).await;
+        // Respect du rate limit Scryfall : Scryfall demande 50-100ms entre requêtes ;
+        // on garde une marge confortable (150ms ≈ 6-7 req/s) pour éviter les 429.
+        tokio::time::sleep(std::time::Duration::from_millis(150)).await;
     }
 
     // Réinitialise le curseur de page pour que le prochain lancement reparte de 0
