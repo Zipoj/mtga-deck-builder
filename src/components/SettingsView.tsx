@@ -12,7 +12,7 @@ import {
   getCustomColorVars, saveCustomColorVars,
 } from "../themes";
 
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.0.1";
 
 // ─── Langues disponibles ───────────────────────────────────────────────────────
 // display = code court utilisé dans l'app (displayLang)

@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "MTGA Deck Builder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "identifier": "com.mtgabuilder.app",
   "build": {
     "frontendDist": "../dist",

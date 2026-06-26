@@ -1,6 +1,6 @@
 [package]
 name = "mtga-deck-builder"
-version = "1.0.0"
+version = "1.0.1"
 description = "MTGA Deck Builder — application locale offline"
 authors = []
 edition = "2021"

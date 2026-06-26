@@ -8,7 +8,7 @@
 
 [English](README.md) · [Français](README.fr.md)
 
-![version](https://img.shields.io/badge/version-1.0.0-7c4dff)
+![version](https://img.shields.io/badge/version-1.0.1-7c4dff)
 ![platform](https://img.shields.io/badge/platform-Windows-0078d6)
 ![Tauri](https://img.shields.io/badge/built%20with-Tauri%202-24c8db)
 ![license](https://img.shields.io/badge/license-MIT-green)
@@ -61,7 +61,7 @@ Construisez vos decks Magic: The Gathering Arena à partir des cartes que vous *
 
 ## 🚀 Installation
 
-1. Rendez-vous sur la [**dernière release**](https://github.com/Zipoj/mtga-deck-builder/releases/latest) et téléchargez **`MTGA Deck Builder_1.0.0_x64-setup.exe`**.
+1. Rendez-vous sur la [**dernière release**](https://github.com/Zipoj/mtga-deck-builder/releases/latest) et téléchargez **`MTGA Deck Builder_1.0.1_x64-setup.exe`**.
 2. Lancez l'installeur et suivez l'assistant.
 3. Si **Windows SmartScreen** apparaît (l'app n'est pas signée), cliquez sur **Informations complémentaires** → **Exécuter quand même**.
 
